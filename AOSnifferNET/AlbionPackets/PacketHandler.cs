@@ -18,7 +18,7 @@ namespace AOSnifferNET
             {
                 // Bien
                 // Movimiento de cualquier entidad en el juego
-                onEntityMovementEvent(parameters);
+                //onEntityMovementEvent(parameters);
             }
 
             parameters.TryGetValue((byte)252, out object val);
@@ -37,6 +37,11 @@ namespace AOSnifferNET
             
             switch (evCode)
             {
+                case EventCodes.NewExit:
+                    // {"0":1,"1":"P0qQVW1rgESBs9jwDb9+ZA==","2":[-15.0,35.0],"252":205}
+                    // La posicion de las salidas del mapa actual
+                    onNewExit(parameters);
+                    break;
                 case EventCodes.InventoryPutItem:
                     // InventoryPutItem: {"0":278105,"1":7,"2":"DVOdrtd7f0WXPVIb3ayDew==","3":7,"252":25} 0: ItemID
                     // Item puesto en el inventario
@@ -308,6 +313,16 @@ namespace AOSnifferNET
         }
 
         #region OnEvent
+        private void onNewExit(Dictionary<byte, object> parameters)
+        {
+            Single[] entryPos = new Single[2];
+            if (parameters.ContainsKey(2))
+            {
+                entryPos = (Single[])parameters[2];
+                var ne = new evNewExit(entryPos);
+                printEventInfo(ne, EventCodes.NewExit);
+            }
+        }
         private void onMobChangeState(Dictionary<byte, object> parameters)
         {
             int mobID = int.Parse(parameters[0].ToString());
