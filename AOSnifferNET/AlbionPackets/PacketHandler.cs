@@ -18,7 +18,7 @@ namespace AOSnifferNET
             {
                 // Bien
                 // Movimiento de cualquier entidad en el juego
-                //onEntityMovementEvent(parameters);
+                onEntityMovementEvent(parameters);
             }
 
             parameters.TryGetValue((byte)252, out object val);
@@ -104,7 +104,7 @@ namespace AOSnifferNET
                     break;
                 case EventCodes.JoinFinished:
                     // Cuando se ha terminado la transicion de un mapa a otro
-                    //onJoinFinished();
+                    onJoinFinished();
                     break;
                 case EventCodes.UpdateSilver:
                     // Bien
@@ -244,6 +244,10 @@ namespace AOSnifferNET
                     // Bien
                     printOperationInfo(parameters, opCode, "onRequest");
                     break;
+                case OperationCodes.ChangeCluster:
+                    // Cuando le pide al servidor hacer un cambio de cluster
+                    printOperationInfo(parameters, opCode, "onRequest");
+                    break;
                 default:
                     //printOperationInfo(parameters, opCode, "onRequest");
                     break;
@@ -263,8 +267,8 @@ namespace AOSnifferNET
             {
                 case OperationCodes.Join:
                     // Bien
+                    // Datos del personaje local cuando entra a un nuevo cluster
                     onJoinResponse(parameters);
-                    printOperationInfo(parameters, opCode, "onResponse");
                     break;
                 case OperationCodes.AuctionGetOffers:
                     onAuctionGetOffers_Res(parameters);
@@ -283,6 +287,10 @@ namespace AOSnifferNET
                 case OperationCodes.HarvestCancel:
                     // Bien
                     printOperationInfo(parameters, opCode, "onResponse");
+                    break;
+                case OperationCodes.ChangeCluster:
+                    // La respuesta viene cuando ya cambiaste de cluster y muestra el cluster al que entraste
+                    //printOperationInfo(parameters, opCode, "onResponse");
                     break;
                 default :
                     //printOperationInfo(parameters, opCode, "onResponse");
