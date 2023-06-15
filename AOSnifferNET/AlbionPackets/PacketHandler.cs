@@ -264,6 +264,7 @@ namespace AOSnifferNET
                 case OperationCodes.Join:
                     // Bien
                     onJoinResponse(parameters);
+                    printOperationInfo(parameters, opCode, "onResponse");
                     break;
                 case OperationCodes.AuctionGetOffers:
                     onAuctionGetOffers_Res(parameters);
@@ -867,13 +868,14 @@ namespace AOSnifferNET
             string cName = parameters[2].ToString();
             string cluster = parameters[8].ToString();
             float[] pos = (float[])parameters[9];
+            float angle = float.Parse(parameters[10].ToString());
 
             int currentHealth = int.Parse(parameters[11].ToString());
             int maxHealth = int.Parse(parameters[12].ToString());
             int currentEnergy = int.Parse(parameters[15].ToString());
             int maxEnergy = int.Parse(parameters[16].ToString());
 
-            var jo = new OpJoin(cId, markId, cName, cluster, pos, currentHealth, maxHealth, currentEnergy, maxEnergy);
+            var jo = new OpJoin(cId, markId, cName, cluster, pos, angle, currentHealth, maxHealth, currentEnergy, maxEnergy);
             printOperationInfo(jo, OperationCodes.Join, "onResponse");
         }
 
