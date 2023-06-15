@@ -17,6 +17,7 @@ namespace AOSnifferNET
             if (code == 3 || code == 2)
             {
                 // Bien
+                // Movimiento de cualquier entidad en el juego
                 onEntityMovementEvent(parameters);
             }
 
@@ -38,6 +39,7 @@ namespace AOSnifferNET
             {
                 case EventCodes.InventoryPutItem:
                     // InventoryPutItem: {"0":278105,"1":7,"2":"DVOdrtd7f0WXPVIb3ayDew==","3":7,"252":25} 0: ItemID
+                    // Item puesto en el inventario
                     onInventoryPutItem(parameters);
                     break;
                 case EventCodes.NewEquipmentItem:
@@ -62,61 +64,76 @@ namespace AOSnifferNET
                     break;
                 case EventCodes.AttachItemContainer:
                     // Bien
+                    // Contenedor con items, ya sea loot o un chest
                     onAttachItemContainer(parameters);
                     break;
                 case EventCodes.NewLoot:
                     // Bien
+                    // Donde ha aparecido una bolsa de loot en el mapa
                     onNewLoot(parameters);
                     break;
                 case EventCodes.NewCharacter:
                     // Bien
+                    // Un nuevo personaje ha aparecido cerca y sus datos correspondientes
                     onNewCharacter(parameters);
                     break;
                 case EventCodes.Leave:
                     // Bien
+                    // Quien ha salido del mapa o del campo de vision
                     onLeaveEvent(parameters);
                     break;
                 case EventCodes.Mounted:
                     // Bien
+                    // Cuando cualquiera en el mapa se monta o desmonta
                     onMounted(parameters);
                     break;
                 case EventCodes.NewMountObject:
                     // Cambio a 295
+                    // Cuando una montura aparece en el mapa y sus datos correspondientes
                     onNewMountObject(parameters);
                     break;
                 case EventCodes.NewMob:
                     // Bien
+                    // Cuando una Mob aparece en el mapa y sus datos correspondientes
                     onNewMob(parameters);
                     break;
                 case EventCodes.JoinFinished:
+                    // Cuando se ha terminado la transicion de un mapa a otro
                     //onJoinFinished();
                     break;
                 case EventCodes.UpdateSilver:
                     // Bien
+                    // Cuando se gana o pierde silver se actualiza la cantidad de silver que tenemos
                     onUpdateSilver(parameters);
                     break;
                 case EventCodes.NewSimpleHarvestableObjectList:
                     // Bien
+                    // Una lista de los nodos farmeables en el mapa y sus datos correspondientes
                     onNewSimpleHarvestableObjectList(parameters);
                     break;
                 case EventCodes.NewHarvestableObject:
                     // Bien
+                    // Cuando un solo nodo farmeable aparece en el mapa y sus datos correspondientes
                     onNewHarvestableObject(parameters);
                     break;
                 case EventCodes.HarvestableChangeState:
                     // Bien
+                    // Cuando un nodo farmeable cambia de estado o sea cambia la cantidad de cargas que tiene (encantamiento?)
                     onHarvestableChangeState(parameters);
                     break;
                 case EventCodes.MobChangeState:
                     // MobChangeState: {"0":718898,"1":1,"252":43}
+                    // Cuando una Mob cambia de estado de encantamiento
                     onMobChangeState(parameters);
                     break;
                 case EventCodes.InCombatStateUpdate:
                     // Bien
+                    // El estado de En Combate de alguna entidad
                     onInCombatStateUpdate(parameters);
                     break;
                 case EventCodes.HealthUpdate:
                     // Bien
+                    // Registra el cambio de salud de cualquier entidad y de quien se recive el cambio
                     onHealthUpdate(parameters);
                     break;
                 case EventCodes.Attack:
