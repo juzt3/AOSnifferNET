@@ -248,6 +248,10 @@ namespace AOSnifferNET
                     // Cuando le pide al servidor hacer un cambio de cluster
                     printOperationInfo(parameters, opCode, "onRequest");
                     break;
+                case OperationCodes.GetGameServerByCluster:
+                    // Cuando le pide al servidor la direccion dns del cluster
+                    printOperationInfo(parameters, opCode, "onRequest");
+                    break;
                 default:
                     //printOperationInfo(parameters, opCode, "onRequest");
                     break;
