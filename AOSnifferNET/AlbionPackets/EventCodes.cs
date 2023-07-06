@@ -25,20 +25,20 @@
         CastHits,
         ChannelingEnded,
         AttackBuilding,
-        InventoryPutItem=25, //  map[0:652 1:6 2:[118 -97 114 112 -46 84 -60 75 -103 -93 -3 -29 118 -125 -50 96] 3:17 252:23] (0: ObjectId, 2: UserId)
+        InventoryPutItem = 25, //  map[0:652 1:6 2:[118 -97 114 112 -46 84 -60 75 -103 -93 -3 -29 118 -125 -50 96] 3:17 252:23] (0: ObjectId, 2: UserId)
         InventoryDeleteItem, // map[0:754 1:48 252:24] (0: ObjectId) 
-        NewCharacter=27,
+        NewCharacter = 27,
         NewEquipmentItem, //  map[0:657 1:2036 2:1 4:28169331 5:Apolo540 6:3 7:90000000 8:[] 9:[0] 252:27] (0: ObjectId, 1: ItemId, 2: Amount, 4: Avarage Market Price, 5: CrafterName)
         NewSimpleItem, //  map[0:505 1:7006 2:1 3:true 4:29033970 252:27] (0: ObjectId, 1: ItemId, 2: Amount)
         NewFurnitureItem,
         NewJournalItem,
         NewLaborerItem,
         NewSimpleHarvestableObject,
-        NewSimpleHarvestableObjectList=35,
-        NewHarvestableObject=36,
+        NewSimpleHarvestableObjectList = 35,
+        NewHarvestableObject = 36,
         NewSilverObject,
-        NewBuilding=41,
-        HarvestableChangeState=42,
+        NewBuilding = 41,
+        HarvestableChangeState = 42,
         MobChangeState,
         FactionBuildingInfo,
         CraftBuildingInfo,
@@ -73,7 +73,7 @@
         PlayEmote,
         StopEmote,
         SystemMessage,
-        UtilityTextMessage=75,
+        UtilityTextMessage = 75,
         UpdateSilver = 76, // map[0:4195 1:884995625105 252:71] (0: ObjectId, 1: CurrentSilver)
         UpdateFame, // map[0:4195 1:5811910006347 2:100000000 4:10000 6:1 7:427 252:72] (0: ObjectId, 1: TotalPlayerFame, 2: fameWithZoneMultiplier, 3: GroupSize, 4: Multiplier, 5: IsPremiumBonus, 6: BonusFactor, 7: ItemId, 9: SatchelFame, )
         UpdateLearningPoints,
@@ -82,7 +82,7 @@
         UpdateFactionStanding,
         Respawn,
         ServerDebugLog,
-        CharacterEquipmentChanged,
+        CharacterEquipmentChanged = 85,
         RegenerationHealthChanged,
         RegenerationEnergyChanged,
         RegenerationMountHealthChanged,
@@ -90,8 +90,8 @@
         RegenerationHealthEnergyComboChanged,
         RegenerationPlayerComboChanged,
         DurabilityChanged,
-        NewLoot=93, // {"0":443987,"1":753,"2":443320,"3":"@MOB_UNDEAD_GHOUL_STANDARD","4":[190.0,293.5],"5":298.889069,"7":2,"10":["Uv++ltnQS0m8aD1+rF1tzw=="],"12":638028508050864513,"14":true,"15":1.25,"18":[],"22":0,"23":0,"24":-1,"252":89} 4: pos 10: markid del dueño?
-        AttachItemContainer=94, //  {"0":150286,"1":"8WUpR31OzEqiKE2bPQ6HWg==","3":[150287],"4":1,"252":90} 0: ObjectID 1: OwnerMark 3. Items ID List
+        NewLoot = 93, // {"0":443987,"1":753,"2":443320,"3":"@MOB_UNDEAD_GHOUL_STANDARD","4":[190.0,293.5],"5":298.889069,"7":2,"10":["Uv++ltnQS0m8aD1+rF1tzw=="],"12":638028508050864513,"14":true,"15":1.25,"18":[],"22":0,"23":0,"24":-1,"252":89} 4: pos 10: markid del dueño?
+        AttachItemContainer = 94, //  {"0":150286,"1":"8WUpR31OzEqiKE2bPQ6HWg==","3":[150287],"4":1,"252":90} 0: ObjectID 1: OwnerMark 3. Items ID List
         DetachItemContainer, //  map[0:[-95 72 -77 -75 -70 34 127 73 -114 -96 28 8 75 -107 -106 125] 252:90]
         InvalidateItemContainer,
         LockItemContainer,
@@ -114,9 +114,9 @@
         StartTerritoryMatchInfos,
         StartArenaMatchInfos,
         EndTerritoryMatch,
-        EndArenaMatch=109,
+        EndArenaMatch = 109,
         MatchUpdate,
-        ActiveMatchUpdate=112,
+        ActiveMatchUpdate = 112,
         NewMob = 117,
         DebugAggroInfo,
         DebugVariablesInfo,
@@ -197,7 +197,7 @@
         LeftChatChannel,
         RemovedChatChannel,
         AccessStatus,
-        Mounted=200, // When me or other player gets mounted
+        Mounted = 200, // When me or other player gets mounted
         MountStart,
         MountCancel,
         NewTravelpoint,
@@ -291,7 +291,7 @@
         DefenseUnitAttackBegin,
         DefenseUnitAttackEnd,
         DefenseUnitAttackDamage,
-        UnrestrictedPvpZoneUpdate=999999,
+        UnrestrictedPvpZoneUpdate = 999999,
         ReputationImplicationUpdate,
         NewMountObject = 295,
         MountHealthUpdate,
@@ -334,7 +334,7 @@
         FishingCatch,
         FishingFinished,
         FishingCancel,
-        NewFloatObject = 341,
+        NewFloatObject = 343,
         NewFishingZoneObject,
         FishingMiniGame,
         SteamAchievementCompleted,

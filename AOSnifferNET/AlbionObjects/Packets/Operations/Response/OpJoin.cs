@@ -17,6 +17,9 @@ namespace AOSnifferNET
     // 12: max health
     // 15: current energy
     // 16: max energy
+    // 28: silver
+    // 46: items equiped
+    // 49: skills
     // 60: previous cluster
     internal class OpJoin
     {
@@ -30,6 +33,8 @@ namespace AOSnifferNET
         public int maxHealth;
         public int currentEnergy;
         public int maxEnergy;
+        public short[] items;
+        public short[] skills;
 
         public OpJoin(int characterId, byte[] markId, string characterName, string cluster, float[] pos, float angle, int currentHealth, int maxHealth, int currentEnergy, int maxEnergy)
         {
@@ -43,6 +48,11 @@ namespace AOSnifferNET
             this.maxHealth = maxHealth;
             this.currentEnergy = currentEnergy;
             this.maxEnergy = maxEnergy;
+        }
+
+        public void addItemsAndSkills(short[] items, short[] skills) {
+            this.items = items;
+            this.skills = skills;
         }
     }
 }

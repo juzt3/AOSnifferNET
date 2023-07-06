@@ -117,8 +117,10 @@
   <ItemGroup>
     <Compile Include="AlbionObjects\AuctionItems.cs" />
     <Compile Include="AlbionObjects\Packets\Events\evAttack.cs" />
+    <Compile Include="AlbionObjects\Packets\Events\evCharacterEquipmentChanged.cs" />
     <Compile Include="AlbionObjects\Packets\Events\evInventoryPutItem.cs" />
     <Compile Include="AlbionObjects\Packets\Events\evMobChangeState.cs" />
+    <Compile Include="AlbionObjects\Packets\Events\evNewBuilding.cs" />
     <Compile Include="AlbionObjects\Packets\Events\evNewExit.cs" />
     <Compile Include="AlbionObjects\Packets\Events\evNewFishingZoneObject.cs" />
     <Compile Include="AlbionObjects\Packets\Events\evNewFloatObject.cs" />
