@@ -259,6 +259,10 @@ namespace AOSnifferNET
                     // Cuando le pide al servidor la direccion dns del cluster
                     printOperationInfo(parameters, opCode, "onRequest");
                     break;
+                case OperationCodes.GetReferralLink:
+                    // Cuando logea
+                    printOperationInfo(parameters, opCode, "onRequest");
+                    break;
                 default:
                     //printOperationInfo(parameters, opCode, "onRequest");
                     break;
@@ -783,7 +787,12 @@ namespace AOSnifferNET
             string alliance = oAlliance == null ? "" : oAlliance.ToString();
             Single[] pos = (Single[])parameters[13];
             short[] items = new short[10];
-            short[] skills = new short[6];
+            short[] skills;
+            try
+            {
+                skills = new short[6];
+            }
+            catch { return; }
             int faction = int.Parse(parameters[46].ToString());
             int currentHealth = int.Parse(parameters[19].ToString());
             int maxHealth = int.Parse(parameters[20].ToString());
