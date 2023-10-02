@@ -4,6 +4,7 @@ using PhotonPackageParser;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 
 namespace AOSnifferNET
@@ -32,9 +33,8 @@ namespace AOSnifferNET
             }
             catch (System.Collections.Generic.KeyNotFoundException)
             {
-                debugPacket(parameters, iCode);
+                //debugPacket(parameters, iCode);
             }
-
             switch (evCode)
             {
                 case EventCodes.CharacterEquipmentChanged:
@@ -148,7 +148,6 @@ namespace AOSnifferNET
                 case EventCodes.Attack:
                     // Attack: { "0":361885,"1":40045690,"2":359223,"3":1,"4":40045810,"5":40045810,"6":1,"252":12}
                     onAttack(parameters);
-                    //printEventInfo(parameters, evCode);
                     break;
                 case EventCodes.NewRandomDungeonExit:
                     // Cambio a 308
@@ -183,11 +182,13 @@ namespace AOSnifferNET
                 case EventCodes.NewBuilding:
                     onNewBuilding(parameters);
                     break;
+                case EventCodes.AntiCheatMessageToClient:
+                    //printEventInfo(parameters, evCode);
+                    break;
                 default:
                     //printEventInfo(parameters, evCode);
                     break;
             }
-
         }
 
         protected override void OnRequest(byte operationCode, Dictionary<byte, object> parameters)
@@ -257,11 +258,15 @@ namespace AOSnifferNET
                     break;
                 case OperationCodes.GetGameServerByCluster:
                     // Cuando le pide al servidor la direccion dns del cluster
+                    // GetGameServerByCluster: {"0":"0000","255":10,"253":16}
                     printOperationInfo(parameters, opCode, "onRequest");
                     break;
                 case OperationCodes.GetReferralLink:
                     // Cuando logea
                     printOperationInfo(parameters, opCode, "onRequest");
+                    break;
+                case OperationCodes.AntiCheatMessageToServer:
+                    //printOperationInfo(parameters, opCode, "onRequest");
                     break;
                 default:
                     //printOperationInfo(parameters, opCode, "onRequest");
@@ -278,7 +283,6 @@ namespace AOSnifferNET
             if (!int.TryParse(val.ToString(), out int iCode)) return;
 
             OperationCodes opCode = (OperationCodes)iCode;
-
 
             switch (opCode)
             {
@@ -309,6 +313,10 @@ namespace AOSnifferNET
                     // La respuesta viene cuando ya cambiaste de cluster y muestra el cluster al que entraste
                     //printOperationInfo(parameters, opCode, "onResponse");
                     break;
+                case OperationCodes.GetGameServerByCluster:
+                    // GetGameServerByCluster: {"0":"live01-win-28.dc02.albion.zone:5056","255":10,"253":16}
+                    printOperationInfo(parameters, opCode, "onResponse");
+                    break;
                 default:
                     //printOperationInfo(parameters, opCode, "onResponse");
                     break;
@@ -328,14 +336,22 @@ namespace AOSnifferNET
             }
             */
             string outLine = "[onEvent][" + (int)evCode + "] " + evCode + ": " + jsonPacket;
-            Console.WriteLine(outLine);
+            var output = new StreamWriter(Console.OpenStandardOutput());
+            output.WriteLine(outLine);
+            output.Flush();
+            //Console.WriteLine(outLine);
+            //Console.Out.Flush();
         }
         private void printOperationInfo(Object obj, OperationCodes opCode, String typeInfo)
         {
             string jsonPacket;
             jsonPacket = JsonConvert.SerializeObject(obj);
             string outLine = "[" + typeInfo + "][" + (int)opCode + "] " + opCode + ": " + jsonPacket;
-            Console.WriteLine(outLine);
+            var output = new StreamWriter(Console.OpenStandardOutput());
+            output.WriteLine(outLine);
+            output.Flush();
+            //Console.WriteLine(outLine);
+            //Console.Out.Flush();
         }
 
         private void debugPacket(Object obj, int iCode)
@@ -344,6 +360,7 @@ namespace AOSnifferNET
             jsonPacket = JsonConvert.SerializeObject(obj);
             string outLine = iCode + ": " + jsonPacket;
             Console.WriteLine(outLine);
+            Console.Out.Flush();
         }
 
         #region OnEvent
@@ -864,8 +881,10 @@ namespace AOSnifferNET
 
             string strJson;
             strJson = JsonConvert.SerializeObject(ent);
-
-            Console.WriteLine("[onEntityMovementEvent]: {0}", strJson);
+            string outLine = "[onEntityMovementEvent]: " + strJson;
+            var output = new StreamWriter(Console.OpenStandardOutput());
+            output.WriteLine(outLine);
+            output.Flush();
         }
         #endregion
 
@@ -984,7 +1003,9 @@ namespace AOSnifferNET
             int currentEnergy = int.Parse(parameters[15].ToString());
             int maxEnergy = int.Parse(parameters[16].ToString());
 
-            var jo = new OpJoin(cId, markId, cName, cluster, pos, angle, currentHealth, maxHealth, currentEnergy, maxEnergy);
+            int faction = int.Parse(parameters[43].ToString());
+
+            var jo = new OpJoin(cId, markId, cName, cluster, pos, angle, currentHealth, maxHealth, currentEnergy, maxEnergy, faction);
             printOperationInfo(jo, OperationCodes.Join, "onResponse");
         }
 

@@ -361,7 +361,7 @@
         GetPersonalSeasonTrackerData,
         UseConsumableFromInventory,
         ClaimPersonalSeasonReward,
-        EasyAntiCheatMessageToServer = 368,
+        AntiCheatMessageToServer = 369,
         SetNextTutorialState,
         AddPlayerToMuteList,
         RemovePlayerFromMuteList,
