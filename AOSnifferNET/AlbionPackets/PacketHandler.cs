@@ -185,6 +185,19 @@ namespace AOSnifferNET
                 case EventCodes.AntiCheatMessageToClient:
                     //printEventInfo(parameters, evCode);
                     break;
+                case EventCodes.CastHits:
+                    // {"0":88105,"1":95538,"2":4414,"3":1,"4":1,"252":20}
+                    // 0: target id 1: attacker id
+                    printEventInfo(parameters, evCode);
+                    break;
+                case EventCodes.CastStart:
+                    // CastStart: {"0":89514,"1":18668197,"2":[201.960464,220.702423],"4":18669497,"5":4400,"6":-1,"8":7,"9":0,"252":13}
+                    // 0: caster id 2:Spell direction pos
+                    printEventInfo(parameters, evCode);
+                    break;
+                case EventCodes.CastTimeUpdate:
+                    printEventInfo(parameters, evCode);
+                    break;
                 default:
                     //printEventInfo(parameters, evCode);
                     break;
