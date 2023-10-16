@@ -34,11 +34,11 @@
         NewJournalItem,
         NewLaborerItem,
         NewSimpleHarvestableObject,
-        NewSimpleHarvestableObjectList = 35,
-        NewHarvestableObject = 36,
+        NewSimpleHarvestableObjectList = 36,
+        NewHarvestableObject = 37,
         NewSilverObject,
-        NewBuilding = 41,
-        HarvestableChangeState = 42,
+        NewBuilding = 42,
+        HarvestableChangeState = 43,
         MobChangeState,
         FactionBuildingInfo,
         CraftBuildingInfo,
@@ -51,9 +51,9 @@
         LaborerObjectInfo,
         LaborerObjectJobInfo,
         MarketPlaceBuildingInfo,
-        HarvestStart = 55,
-        HarvestCancel = 56,
-        HarvestFinished = 57,
+        HarvestStart = 56,
+        HarvestCancel = 57,
+        HarvestFinished = 58,
         TakeSilver,
         ActionOnBuildingStart,
         ActionOnBuildingCancel,
@@ -72,9 +72,9 @@
         ChatMuted,
         PlayEmote,
         StopEmote,
-        SystemMessage,
-        UtilityTextMessage = 75,
-        UpdateSilver = 76, // map[0:4195 1:884995625105 252:71] (0: ObjectId, 1: CurrentSilver)
+        SystemMessage = 75,
+        UtilityTextMessage = 76,
+        UpdateSilver = 77, // map[0:4195 1:884995625105 252:71] (0: ObjectId, 1: CurrentSilver)
         UpdateFame, // map[0:4195 1:5811910006347 2:100000000 4:10000 6:1 7:427 252:72] (0: ObjectId, 1: TotalPlayerFame, 2: fameWithZoneMultiplier, 3: GroupSize, 4: Multiplier, 5: IsPremiumBonus, 6: BonusFactor, 7: ItemId, 9: SatchelFame, )
         UpdateLearningPoints,
         UpdateReSpecPoints,
@@ -90,8 +90,8 @@
         RegenerationHealthEnergyComboChanged,
         RegenerationPlayerComboChanged,
         DurabilityChanged,
-        NewLoot = 93, // {"0":443987,"1":753,"2":443320,"3":"@MOB_UNDEAD_GHOUL_STANDARD","4":[190.0,293.5],"5":298.889069,"7":2,"10":["Uv++ltnQS0m8aD1+rF1tzw=="],"12":638028508050864513,"14":true,"15":1.25,"18":[],"22":0,"23":0,"24":-1,"252":89} 4: pos 10: markid del dueño?
-        AttachItemContainer = 94, //  {"0":150286,"1":"8WUpR31OzEqiKE2bPQ6HWg==","3":[150287],"4":1,"252":90} 0: ObjectID 1: OwnerMark 3. Items ID List
+        NewLoot = 94, // {"0":443987,"1":753,"2":443320,"3":"@MOB_UNDEAD_GHOUL_STANDARD","4":[190.0,293.5],"5":298.889069,"7":2,"10":["Uv++ltnQS0m8aD1+rF1tzw=="],"12":638028508050864513,"14":true,"15":1.25,"18":[],"22":0,"23":0,"24":-1,"252":89} 4: pos 10: markid del dueño?
+        AttachItemContainer = 95, //  {"0":150286,"1":"8WUpR31OzEqiKE2bPQ6HWg==","3":[150287],"4":1,"252":90} 0: ObjectID 1: OwnerMark 3. Items ID List
         DetachItemContainer, //  map[0:[-95 72 -77 -75 -70 34 127 73 -114 -96 28 8 75 -107 -106 125] 252:90]
         InvalidateItemContainer,
         LockItemContainer,
@@ -114,10 +114,10 @@
         StartTerritoryMatchInfos,
         StartArenaMatchInfos,
         EndTerritoryMatch,
-        EndArenaMatch = 109,
+        EndArenaMatch,
         MatchUpdate,
-        ActiveMatchUpdate = 112,
-        NewMob = 117,
+        ActiveMatchUpdate,
+        NewMob = 118,
         DebugAggroInfo,
         DebugVariablesInfo,
         DebugReputationInfo,
@@ -197,12 +197,12 @@
         LeftChatChannel,
         RemovedChatChannel,
         AccessStatus,
-        Mounted = 200, // When me or other player gets mounted
+        Mounted = 201, // When me or other player gets mounted
         MountStart,
         MountCancel,
         NewTravelpoint,
         NewIslandAccessPoint,
-        NewExit,
+        NewExit = 206,
         UpdateHome,
         UpdateChatSettings,
         ResurrectionOffer,
@@ -260,7 +260,7 @@
         Unknown255,
         GrabbedLoot, // LOOT: map[0:424 1:Triky313 2:Bruno313 4:1841 5:1 252:256] | SILVER: map[0:6436 2:Triky313 3:true 5:1550115 252:256] (0: ObjectId, 1: LootedBody, 2: Looter, 4: ItemId, 5: Quantity) 
         PlayersInRegionUpdate,
-        InCombatStateUpdate = 263, // <- 1 = true; player hits enemy | 2 = true; enemy hits player
+        InCombatStateUpdate = 264, // <- 1 = true; player hits enemy | 2 = true; enemy hits player
         OtherGrabbedLoot,
         SiegeCampClaimStart,
         SiegeCampClaimCancel,
@@ -291,9 +291,9 @@
         DefenseUnitAttackBegin,
         DefenseUnitAttackEnd,
         DefenseUnitAttackDamage,
-        UnrestrictedPvpZoneUpdate = 999999,
-        ReputationImplicationUpdate,
-        NewMountObject = 295,
+        UnrestrictedPvpZoneUpdate,
+        ReputationImplicationUpdate = 295,
+        NewMountObject = 296,
         MountHealthUpdate,
         MountCooldownUpdate,
         NewExpeditionAgent,
@@ -306,7 +306,7 @@
         UseFunction,
         NewPortalEntrance,
         NewPortalExit,
-        NewRandomDungeonExit = 308,
+        NewRandomDungeonExit = 309,
         WaitingQueueUpdate,
         PlayerMovementRateUpdate,
         ObserveStart,

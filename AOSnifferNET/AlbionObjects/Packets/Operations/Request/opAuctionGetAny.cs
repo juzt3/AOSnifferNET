@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AOSnifferNET
 {
@@ -10,17 +6,17 @@ namespace AOSnifferNET
     internal class opAuctionGetAny
     {
         public int id;
-        public string queryText;
+        public Int16[] itemsID;
         public string category;
         public string subcategory;
         public int quality;
         public int tier;
         public int enchantment;
 
-        public opAuctionGetAny(int id,string queryText, string category, string subcategory, int quality, int tier, int enchantment)
+        public opAuctionGetAny(int id, Int16[] itemsID, string category, string subcategory, int quality, int tier, int enchantment)
         {
             this.id = id;
-            this.queryText = queryText;
+            this.itemsID = itemsID;
             this.category = category;
             this.subcategory = subcategory;
             this.quality = quality;

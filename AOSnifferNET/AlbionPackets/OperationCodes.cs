@@ -196,7 +196,7 @@
         StopEmote,
         GetClusterMapInfo,
         AccessRightsChangeSettings,
-        Mount = 193,
+        Mount = 194,
         MountCancel,
         BuyJourney,
         SetSaleStatusForEstate,
