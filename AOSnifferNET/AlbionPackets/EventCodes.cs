@@ -114,7 +114,7 @@
         StartTerritoryMatchInfos,
         StartArenaMatchInfos,
         EndTerritoryMatch,
-        EndArenaMatch,
+        EndArenaMatch = 115,
         MatchUpdate,
         ActiveMatchUpdate,
         NewMob = 118,

@@ -34,6 +34,7 @@ namespace AOSnifferNET
             {
                 //debugPacket(parameters, iCode);
             }
+
             switch (evCode)
             {
                 case EventCodes.CharacterEquipmentChanged:
@@ -801,14 +802,14 @@ namespace AOSnifferNET
 
         private void onNewMob(Dictionary<byte, object> parameters)
         {
-            if (!parameters.ContainsKey(13))
-                return;
+            //if (!parameters.ContainsKey(13))
+            //    return;
 
             int id = int.Parse(parameters[0].ToString());
             int typeId = int.Parse(parameters[1].ToString());
-            Single[] pos = (Single[])parameters[8];
+            Single[] pos = (Single[])parameters[7];
             int health = int.Parse(parameters[13].ToString());
-            int rarity = int.Parse(parameters[20].ToString());
+            int rarity = int.Parse(parameters[22].ToString());
 
             var mob = new evNewMob(id, typeId, pos, health, rarity);
             printEventInfo(mob, EventCodes.NewMob);
