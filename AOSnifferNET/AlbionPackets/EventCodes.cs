@@ -329,7 +329,7 @@
         GvgSeasonUpdate,
         GvgSeasonCheatCommand,
         SeasonPointsByKillingBooster,
-        FishingStart,
+        FishingStart = 339,
         FishingCast,
         FishingCatch,
         FishingFinished,

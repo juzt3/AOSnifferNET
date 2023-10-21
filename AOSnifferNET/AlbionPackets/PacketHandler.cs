@@ -34,7 +34,6 @@ namespace AOSnifferNET
             {
                 //debugPacket(parameters, iCode);
             }
-
             switch (evCode)
             {
                 case EventCodes.CharacterEquipmentChanged:
