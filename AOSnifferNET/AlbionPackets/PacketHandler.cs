@@ -18,7 +18,7 @@ namespace AOSnifferNET
             if (code == 3 || code == 2)
             {
                 // Igual
-                onEntityMovementEvent(parameters);
+                //onEntityMovementEvent(parameters);
             }
 
             parameters.TryGetValue((byte)252, out object val);
@@ -109,7 +109,7 @@ namespace AOSnifferNET
                     // Cuando se ha terminado la transicion de un mapa a otro
                     onJoinFinished();
                     break;
-                case EventCodes.UpdateSilver:
+                case EventCodes.UpdateMoney:
                     // Cambio a 77
                     // Cuando se gana o pierde silver se actualiza la cantidad de silver que tenemos
                     onUpdateSilver(parameters);
@@ -184,7 +184,7 @@ namespace AOSnifferNET
                     //Cambio a 42
                     onNewBuilding(parameters);
                     break;
-                case EventCodes.AntiCheatMessageToClient:
+                case EventCodes.EasyAntiCheatMessageToClient:
                     //printEventInfo(parameters, evCode);
                     break;
                 case EventCodes.CastHits:
@@ -204,7 +204,7 @@ namespace AOSnifferNET
                     printEventInfo(parameters, evCode);
                     break;
                 default:
-                    //printEventInfo(parameters, evCode);
+                    printEventInfo(parameters, evCode);
                     break;
             }
         }
@@ -283,11 +283,11 @@ namespace AOSnifferNET
                     // Igual
                     printOperationInfo(parameters, opCode, "onRequest");
                     break;
-                case OperationCodes.AntiCheatMessageToServer:
+                case OperationCodes.EasyAntiCheatMessageToServer:
                     //printOperationInfo(parameters, opCode, "onRequest");
                     break;
                 default:
-                    //printOperationInfo(parameters, opCode, "onRequest");
+                    printOperationInfo(parameters, opCode, "onRequest");
                     break;
             }
 
@@ -340,7 +340,7 @@ namespace AOSnifferNET
                     //printOperationInfo(parameters, opCode, "onResponse");
                     break;
                 default:
-                    //printOperationInfo(parameters, opCode, "onResponse");
+                    printOperationInfo(parameters, opCode, "onResponse");
                     break;
             }
 
@@ -695,7 +695,7 @@ namespace AOSnifferNET
 
             var us = new evUpdateSilver(id, currentSilver);
 
-            printEventInfo(us, EventCodes.UpdateSilver);
+            printEventInfo(us, EventCodes.UpdateMoney);
         }
 
         private void onNewSimpleHarvestableObjectList(Dictionary<byte, object> parameters)
