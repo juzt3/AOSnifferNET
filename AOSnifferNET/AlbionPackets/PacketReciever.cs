@@ -124,6 +124,8 @@ namespace AOSnifferNET
                     }
                 }
                 photonParser.ReceivePacket(udp.Payload.ToArray());
+                //Console.WriteLine(ip.Source.ToString());
+                //Console.WriteLine(ip.Destination.ToString());
             }
             catch (Exception)
             {

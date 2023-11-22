@@ -17,8 +17,7 @@ namespace AOSnifferNET
         {
             if (code == 3 || code == 2)
             {
-                // Igual
-                //onEntityMovementEvent(parameters);
+                onEntityMovementEvent(parameters);
             }
 
             parameters.TryGetValue((byte)252, out object val);
@@ -40,167 +39,114 @@ namespace AOSnifferNET
                     onCharacterEquipmentChanged(parameters);
                     break;
                 case EventCodes.NewExit:
-                    // {"0":1,"1":"P0qQVW1rgESBs9jwDb9+ZA==","2":[-15.0,35.0],"252":205}
-                    // Cambio a 206
                     //onNewExit(parameters);
                     break;
                 case EventCodes.InventoryPutItem:
-                    // InventoryPutItem: {"0":278105,"1":7,"2":"DVOdrtd7f0WXPVIb3ayDew==","3":7,"252":25} 0: ItemID
-                    // Igual
                     //onInventoryPutItem(parameters);
                     break;
                 case EventCodes.NewEquipmentItem:
-                    // Igual
                     onNewGeneralItem(parameters, evCode);
                     break;
                 case EventCodes.NewSimpleItem:
-                    // Igual
                     onNewGeneralItem(parameters, evCode);
                     break;
                 case EventCodes.NewFurnitureItem:
-                    // Igual
                     onNewGeneralItem(parameters, evCode);
                     break;
                 case EventCodes.NewJournalItem:
-                    // Igual
                     onNewGeneralItem(parameters, evCode);
                     break;
                 case EventCodes.NewLaborerItem:
-                    // Igual
                     onNewGeneralItem(parameters, evCode);
                     break;
                 case EventCodes.AttachItemContainer:
-                    // Cambio a 95
-                    // Contenedor con items, ya sea loot o un chest
                     onAttachItemContainer(parameters);
                     break;
                 case EventCodes.NewLoot:
-                    // Cambio a 94
-                    // Donde ha aparecido una bolsa de loot en el mapa
                     onNewLoot(parameters);
                     break;
                 case EventCodes.NewCharacter:
-                    // Igual y cambio la estructura
-                    // Un nuevo personaje ha aparecido cerca y sus datos correspondientes
                     onNewCharacter(parameters);
                     break;
                 case EventCodes.Leave:
-                    // Igual
-                    // Quien ha salido del mapa o del campo de vision
                     onLeaveEvent(parameters);
                     break;
                 case EventCodes.Mounted:
-                    // Cambio a 201
-                    // Cuando cualquiera en el mapa se monta o desmonta
                     onMounted(parameters);
                     break;
                 case EventCodes.NewMountObject:
-                    // Cambio a 296
-                    // Cuando una montura aparece en el mapa y sus datos correspondientes
                     onNewMountObject(parameters);
                     break;
                 case EventCodes.NewMob:
-                    // Cambi a 118
-                    // Cuando una Mob aparece en el mapa y sus datos correspondientes
                     onNewMob(parameters);
                     break;
                 case EventCodes.JoinFinished:
-                    // Igual
-                    // Cuando se ha terminado la transicion de un mapa a otro
                     onJoinFinished();
                     break;
                 case EventCodes.UpdateMoney:
-                    // Cambio a 77
-                    // Cuando se gana o pierde silver se actualiza la cantidad de silver que tenemos
                     onUpdateSilver(parameters);
                     break;
                 case EventCodes.NewSimpleHarvestableObjectList:
-                    // Cambio a 36
-                    // Una lista de los nodos farmeables en el mapa y sus datos correspondientes
                     onNewSimpleHarvestableObjectList(parameters);
                     break;
                 case EventCodes.NewHarvestableObject:
-                    // Cambio a 37
-                    // Cuando un solo nodo farmeable aparece en el mapa y sus datos correspondientes
                     onNewHarvestableObject(parameters);
                     break;
                 case EventCodes.HarvestableChangeState:
-                    // Cambio a 43
-                    // Cuando un nodo farmeable cambia de estado o sea cambia la cantidad de cargas que tiene (encantamiento?)
                     onHarvestableChangeState(parameters);
                     break;
                 case EventCodes.MobChangeState:
-                    // Cambio a 44
-                    // MobChangeState: {"0":718898,"1":1,"252":43}
-                    // Cuando una Mob cambia de estado de encantamiento
                     onMobChangeState(parameters);
                     break;
                 case EventCodes.InCombatStateUpdate:
-                    // Cambio a 264
-                    // El estado de En Combate de alguna entidad
                     onInCombatStateUpdate(parameters);
                     break;
                 case EventCodes.HealthUpdate:
-                    // Igual
-                    // Registra el cambio de salud de cualquier entidad y de quien se recive el cambio
                     onHealthUpdate(parameters);
                     break;
                 case EventCodes.Attack:
-                    // Igual
-                    // Attack: { "0":361885,"1":40045690,"2":359223,"3":1,"4":40045810,"5":40045810,"6":1,"252":12}
                     onAttack(parameters);
                     break;
                 case EventCodes.NewRandomDungeonExit:
-                    // Cambio a  309
                     onNewPortalExit(parameters);
                     break;
                 case EventCodes.ActiveSpellEffectsUpdate:
-                    // sin usar
                     // [10]evActiveSpellEffectsUpdate - map[0:655873 1:[685 279 339 509 399] 2:[100 389.11096 369.137 100 389.11096] 3:[100 233.6818 226.1142 100 233.6818] 4:[637945635939432036 637945670488995997 637945670488995997 637903462984937618 637945670488995997] 5:[1 10 10 1 10] 7:[75 - 110 36 73 - 110 36 73 - 110 36 9] 8:[208406056] 9:[9] 10:[0 0] 252:10]
                     // 9 parece ser el tiempo restante
                     //printEventInfo(parameters, evCode);
                     break;
                 case EventCodes.HarvestStart:
-                    // Cambio a 56
-                    //HarvestStart: { "0":144653,"1":638045717068106818,"2":638045717068106818,"3":1263,"5":2.0,"6":-1,"7":-1,"252":54} 5: tiempo para terminar de harvestear
                     onHarvestStart(parameters);
                     break;
                 case EventCodes.HarvestFinished:
-                    // Cambio a 58
                     //onHarvestFinished(parameters);
                     break;
                 case EventCodes.NewFloatObject:
-                    // NewFloatObject: { "0":665769,"1":[-190.193344,59.3336449],"2":298.5448,"3":632262,"4":1,"252":340} 0: bobber ID 1: bobber pos 2:angle 3:player ID 4:fishing state (1: bobber landed 2:fish bitten 3:playing minigam 4:catched a fish 5:failed)
                     onNewFloatObject(parameters);
                     break;
                 case EventCodes.NewFishingZoneObject:
-                    //NewFishingZoneObject: { "0":1182,"1":[253.4,52.8],"2":3,"3":2,"4":"FishingNodeSwarm","252":341} 0: objectID 1: zone pos 2:charges (not present when empty) 3:times fished from 4:zone tipe
                     onNewFishingZoneObject(parameters);
                     break;
                 case EventCodes.FishingMiniGame:
-                    //printEventInfo(parameters, evCode);
+                    printEventInfo(parameters, evCode);
                     break;
                 case EventCodes.NewBuilding:
-                    //Cambio a 42
                     onNewBuilding(parameters);
                     break;
                 case EventCodes.EasyAntiCheatMessageToClient:
                     //printEventInfo(parameters, evCode);
                     break;
                 case EventCodes.CastHits:
-                    // Igual
                     // {"0":88105,"1":95538,"2":4414,"3":1,"4":1,"252":20}
                     // 0: target id 1: attacker id
                     printEventInfo(parameters, evCode);
                     break;
                 case EventCodes.CastStart:
-                    // Igual
                     // CastStart: {"0":89514,"1":18668197,"2":[201.960464,220.702423],"4":18669497,"5":4400,"6":-1,"8":7,"9":0,"252":13}
                     // 0: caster id 2:Spell direction pos
                     printEventInfo(parameters, evCode);
                     break;
                 case EventCodes.CastTimeUpdate:
-                    // Igual
                     printEventInfo(parameters, evCode);
                     break;
                 default:
@@ -229,65 +175,52 @@ namespace AOSnifferNET
             switch (opCode)
             {
                 case OperationCodes.Move:
-                    // Igual
                     onMoveOperation(parameters);
                     break;
                 case OperationCodes.AuctionGetOffers:
-                    // Igual
                     //onAuctionGetOffers_Req(parameters);
                     break;
                 case OperationCodes.AuctionGetRequests:
-                    // Igual
                     //onAuctionGetRequests_Req(parameters);
                     break;
                 case OperationCodes.RegisterToObject:
-                    // Igual
                     //onRegisterToObject(parameters);
                     break;
                 case OperationCodes.UnRegisterFromObject:
-                    // Igual
                     //onUnRegisterFromObject(parameters);
                     break;
                 case OperationCodes.AttackStart:
-                    // Igual
                     printOperationInfo(parameters, opCode, "onRequest");
                     break;
                 case OperationCodes.Mount:
-                    // Cambio a 194
                     onMount(parameters);
                     break;
                 case OperationCodes.MountCancel:
-                    // Cambio a 195
                     printOperationInfo(parameters, opCode, "onRequest");
                     break;
                 case OperationCodes.HarvestStart:
-                    // Igual
                     onReqHarvestStart(parameters);
                     break;
                 case OperationCodes.HarvestCancel:
                     // No llega al minar un cuerpo
-                    // Igual
                     printOperationInfo(parameters, opCode, "onRequest");
                     break;
                 case OperationCodes.ChangeCluster:
-                    // Igual
                     printOperationInfo(parameters, opCode, "onRequest");
                     break;
                 case OperationCodes.GetGameServerByCluster:
                     // Cuando le pide al servidor la direccion dns del cluster
                     // GetGameServerByCluster: {"0":"0000","255":10,"253":16}
-                    // Igual
                     printOperationInfo(parameters, opCode, "onRequest");
                     break;
                 case OperationCodes.GetReferralLink:
-                    // Igual
                     printOperationInfo(parameters, opCode, "onRequest");
                     break;
                 case OperationCodes.EasyAntiCheatMessageToServer:
                     //printOperationInfo(parameters, opCode, "onRequest");
                     break;
                 default:
-                    printOperationInfo(parameters, opCode, "onRequest");
+                    //printOperationInfo(parameters, opCode, "onRequest");
                     break;
             }
 
@@ -304,43 +237,33 @@ namespace AOSnifferNET
             switch (opCode)
             {
                 case OperationCodes.Join:
-                    // Igual pero cambio estructura
-                    // Datos del personaje local cuando entra a un nuevo cluster
+                    printOperationInfo(parameters, opCode, "onResponse");
                     onJoinResponse(parameters);
                     break;
                 case OperationCodes.AuctionGetOffers:
-                    // Igual
                     onAuctionGetOffers_Res(parameters);
                     break;
                 case OperationCodes.AuctionGetRequests:
-                    // Igual
                     onAuctionGetRequests_Res(parameters);
                     break;
                 case OperationCodes.AuctionGetItemAverageValue:
-                    // Igual
                     onAuctionGetItemAverageValue(parameters);
                     break;
                 case OperationCodes.HarvestStart:
-                    // usando solo el request
-                    // Igual
                     //printOperationInfo(parameters, opCode, "onResponse");
                     break;
                 case OperationCodes.HarvestCancel:
-                    // Igual
                     printOperationInfo(parameters, opCode, "onResponse");
                     break;
                 case OperationCodes.ChangeCluster:
-                    // La respuesta viene cuando ya cambiaste de cluster y muestra el cluster al que entraste
-                    // Igual
                     printOperationInfo(parameters, opCode, "onResponse");
                     break;
                 case OperationCodes.GetGameServerByCluster:
                     // GetGameServerByCluster: {"0":"live01-win-28.dc02.albion.zone:5056","255":10,"253":16}
-                    // Igual
                     //printOperationInfo(parameters, opCode, "onResponse");
                     break;
                 default:
-                    printOperationInfo(parameters, opCode, "onResponse");
+                    //printOperationInfo(parameters, opCode, "onResponse");
                     break;
             }
 
@@ -482,6 +405,7 @@ namespace AOSnifferNET
         }
         private void onNewFishingZoneObject(Dictionary<byte, object> parameters)
         {
+            //NewFishingZoneObject: { "0":1182,"1":[253.4,52.8],"2":3,"3":2,"4":"FishingNodeSwarm","252":341} 0: objectID 1: zone pos 2:charges (not present when empty) 3:times fished from 4:zone tipe
             int objectID = int.Parse(parameters[0].ToString());
             Single[] zonePos = (Single[])parameters[1];
             short charges = 0;
@@ -534,6 +458,7 @@ namespace AOSnifferNET
         }
         private void onHarvestStart(Dictionary<byte, object> parameters)
         {
+            //HarvestStart: { "0":144653,"1":638045717068106818,"2":638045717068106818,"3":1263,"5":2.0,"6":-1,"7":-1,"252":54} 5: tiempo para terminar de harvestear
             int harvestableId = int.Parse(parameters[3].ToString());
             float time = float.Parse(parameters[5].ToString());
 
@@ -932,13 +857,24 @@ namespace AOSnifferNET
         }
         private void onMoveOperation(Dictionary<byte, object> parameters)
         {
-            long id = long.Parse(parameters[0].ToString());
+            long timestamp = long.Parse(parameters[0].ToString());
+            /***
+            long today_tick = DateTime.Now.Ticks;
+            DateTime fechaHora_server = new DateTime(timestamp, DateTimeKind.Utc);
+            // Diferencia entre servidor y local
+            //.AddMonths(-1).AddDays(30).AddHours(21).AddMinutes(-2).AddSeconds(50).AddMilliseconds(-250);
+            Console.WriteLine("Hora Server: " + fechaHora_server);
+            DateTime fechaHora_local = new DateTime(today_tick, DateTimeKind.Utc);
+            Console.WriteLine("Hora Local: " + fechaHora_local);
+            long diff = timestamp - today_tick;
+            long espected_timestamp = today_tick + diff;
+            ***/
             float[] pos = (float[])parameters[1];
             float angle = (float)parameters[2];
             float[] target = (float[])parameters[3];
             float speed = (float)parameters[4];
 
-            opMove _ = new opMove(id, pos, angle, target, speed);
+            opMove _ = new opMove(timestamp, pos, angle, target, speed);
             printOperationInfo(_, OperationCodes.Move, "onRequest");
         }
 
