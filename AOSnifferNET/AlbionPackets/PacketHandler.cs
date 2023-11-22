@@ -150,7 +150,7 @@ namespace AOSnifferNET
                     printEventInfo(parameters, evCode);
                     break;
                 default:
-                    printEventInfo(parameters, evCode);
+                    //printEventInfo(parameters, evCode);
                     break;
             }
         }
