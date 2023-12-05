@@ -237,7 +237,6 @@ namespace AOSnifferNET
             switch (opCode)
             {
                 case OperationCodes.Join:
-                    printOperationInfo(parameters, opCode, "onResponse");
                     onJoinResponse(parameters);
                     break;
                 case OperationCodes.AuctionGetOffers:
@@ -952,12 +951,21 @@ namespace AOSnifferNET
         #region onOperation Response
         private void onJoinResponse(Dictionary<byte, object> parameters)
         {
+            // [onResponse][2] Join: {"0":229611,"1":"HldB6eRwfU6UYy3c3Cuenw==","2":"Anyalgo","3":9,"4":22,"5":1,"6":"AwAJAw==","7":"AA8CAA==",
+            // "8":"4203","9":[-79.5,-363.5],"11":3083.0,"12":3083.0,"14":86.31288,"15":638371386969141790,"16":387.0,"17":387.0,"19":4.83620453,"20":638371386969141790,"21":885.0,"22":885.0,"24":8.85,"25":638371386969141790,"26":30000.0,"27":30000.0,"29":0.115740739,"30":638371386961696661,"32":2100836716,"34":20028876730,"35":{},"36":370000,"37":638371385370000000,"38":9999990000,"39":28800000,"40":1899.15479,"41":638371386969141790,"42":"AAAAAAA=","43":2,"44":"","45":0,"46":"","47":0,"48":true,"49":"Pq+miG0ZgEevySATGhQ+bQ==","50":[229616,0,229617,229613,229618,229620,229615,229621,229614,229619],"52":"kh9EpT9bZU6nL1vdJFcBLw==","53":[229622,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,229624,229623],"55":0,"60":"4000","64":"4000","65":"","66":638371386969141790,"67":-2019027515,"76":"","78":"","80":47740000,"81":0,"83":638389385370000000,"84":33,"85":638349760192334510,"87":"","88":[],"89":"","91":true,"92":true,"94":638371386918888800,"95":638371383266745275,"96":12,"97":{},"98":"AAAAAAAA","99":0,"100":100258296,"101":12000000,"102":[-1,-1,-1,-1,-1,-1,-1],"103":0,"111":1,"112":"4000","253":2}
             int cId = int.Parse(parameters[0].ToString());
             byte[] markId = (byte[])parameters[1];
             string cName = parameters[2].ToString();
             string cluster = parameters[8].ToString();
             float[] pos = (float[])parameters[9];
-            float angle = float.Parse(parameters[10].ToString());
+            float angle = 0;
+            if (parameters.ContainsKey(10))
+                angle = float.Parse(parameters[10].ToString());
+            else
+            {
+                if (parameters.ContainsKey(14))
+                    angle = float.Parse(parameters[14].ToString());
+            }
 
             int currentHealth = int.Parse(parameters[11].ToString());
             int maxHealth = int.Parse(parameters[12].ToString());
