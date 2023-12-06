@@ -1,5 +1,6 @@
 ﻿using PacketDotNet;
 using SharpPcap;
+using SharpPcap.LibPcap;
 using System;
 using System.Linq;
 using System.Threading;
@@ -30,8 +31,9 @@ namespace AOSnifferNET
 
         private void CreateListener()
         {
-            CaptureDeviceList allDevices = CaptureDeviceList.Instance;
-            if (allDevices.Count == 0)
+
+            var allDevices = LibPcapLiveDeviceList.Instance;
+            if (allDevices.Count < 1)
             {
                 throw new Exception("No interfaces found! Make sure NPcap is installed.");
             }
