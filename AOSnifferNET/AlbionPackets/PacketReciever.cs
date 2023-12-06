@@ -1,8 +1,6 @@
 ﻿using PacketDotNet;
 using SharpPcap;
-using SharpPcap.LibPcap;
 using System;
-using System.Linq;
 using System.Threading;
 
 namespace AOSnifferNET
@@ -29,7 +27,7 @@ namespace AOSnifferNET
         private void CreateListener()
         {
 
-            var allDevices = LibPcapLiveDeviceList.Instance;
+            var allDevices = CaptureDeviceList.Instance;
             if (allDevices.Count < 1)
             {
                 throw new Exception("No interfaces found! Make sure NPcap is installed.");
@@ -37,8 +35,30 @@ namespace AOSnifferNET
 
             Console.WriteLine("Start");
             // Escuche todos los dispositivos en la máquina local.
-            foreach (ILiveDevice deviceSelected in allDevices.ToList())
+            foreach (ILiveDevice deviceSelected in allDevices)
             {
+                if (!string.IsNullOrEmpty(deviceSelected.Description))
+                {
+                    if (deviceSelected.Description.ToLower().Contains("virtual"))
+                        continue;
+
+                    if (deviceSelected.Description.ToLower().Contains("loopback"))
+                        continue;
+
+                    if (deviceSelected.Description.ToLower().Contains("wan"))
+                        continue;
+
+                    if (deviceSelected.Description.ToLower().Contains("bluetooth"))
+                        continue;
+
+                    if (deviceSelected.Description.ToLower().Contains("pseudo"))
+                        continue;
+
+                    if (deviceSelected.Description.ToLower().Contains("filter"))
+                        continue;
+                }
+
+
                 Thread tPackets = new Thread(() =>
                 {
                     Console.WriteLine($"Open... {deviceSelected.Description}");
