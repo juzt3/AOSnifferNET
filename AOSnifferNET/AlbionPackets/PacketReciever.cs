@@ -17,10 +17,7 @@ namespace AOSnifferNET
             photonParser = new PacketHandler();
             try
             {
-                photonThread = new Thread(() => CreateListener())
-                {
-                    Priority = ThreadPriority.Highest
-                };
+                photonThread = new Thread(() => CreateListener()) { };
                 photonThread.Start();
             }
             catch (Exception ea)
@@ -42,16 +39,6 @@ namespace AOSnifferNET
             // Escuche todos los dispositivos en la máquina local.
             foreach (ILiveDevice deviceSelected in allDevices.ToList())
             {
-                // discard virtual cards (virtual box, virtual pc, etc.)
-                if ((deviceSelected.Description.IndexOf("virtual", StringComparison.OrdinalIgnoreCase) >= 0) ||
-                    (deviceSelected.Name.IndexOf("virtual", StringComparison.OrdinalIgnoreCase) >= 0))
-                    continue;
-
-                // discard "Microsoft Loopback Adapter", it will not show as NetworkInterfaceType.Loopback but as Ethernet Card.
-                if ((deviceSelected.Description.IndexOf("loopback", StringComparison.OrdinalIgnoreCase) >= 0) ||
-                    (deviceSelected.Name.IndexOf("virtual", StringComparison.OrdinalIgnoreCase) >= 0))
-                    continue;
-
                 Thread tPackets = new Thread(() =>
                 {
                     Console.WriteLine($"Open... {deviceSelected.Description}");
@@ -59,9 +46,7 @@ namespace AOSnifferNET
                     deviceSelected.Open(DeviceModes.Promiscuous, 1);
                     deviceSelected.StartCapture();
                 })
-                {
-                    Priority = ThreadPriority.Highest
-                };
+                { };
                 tPackets.Start();
             }
             Console.Read();
