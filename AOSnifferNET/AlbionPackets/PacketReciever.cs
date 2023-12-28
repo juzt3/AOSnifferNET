@@ -65,8 +65,6 @@ namespace AOSnifferNET
                     Console.WriteLine($"Open... {deviceSelected.Description}");
                     deviceSelected.OnPacketArrival += new PacketArrivalEventHandler(PacketHandler);
                     deviceSelected.Open(DeviceModes.Promiscuous, 1);
-                    string filter = "ip and udp";
-                    deviceSelected.Filter = filter;
                     deviceSelected.StartCapture();
                 })
                 { };
