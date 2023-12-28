@@ -1,6 +1,7 @@
 ﻿using PacketDotNet;
 using SharpPcap;
 using System;
+using System.IO;
 using System.Threading;
 
 namespace AOSnifferNET
@@ -64,6 +65,8 @@ namespace AOSnifferNET
                     Console.WriteLine($"Open... {deviceSelected.Description}");
                     deviceSelected.OnPacketArrival += new PacketArrivalEventHandler(PacketHandler);
                     deviceSelected.Open(DeviceModes.Promiscuous, 1);
+                    string filter = "ip and udp";
+                    deviceSelected.Filter = filter;
                     deviceSelected.StartCapture();
                 })
                 { };
@@ -76,10 +79,24 @@ namespace AOSnifferNET
         {
             try
             {
-                UdpPacket packet = Packet.ParsePacket(e.GetPacket().LinkLayerType, e.GetPacket().Data).Extract<UdpPacket>();
-                if (packet != null && (packet.SourcePort == 5056 || packet.DestinationPort == 5056))
+                var packet = Packet.ParsePacket(e.GetPacket().LinkLayerType, e.GetPacket().Data);
+                UdpPacket udp_packet = packet.Extract<UdpPacket>();
+                if (udp_packet != null && (udp_packet.SourcePort == 5056 || udp_packet.DestinationPort == 5056))
                 {
-                    photonParser.ReceivePacket(packet.PayloadData);
+                    photonParser.ReceivePacket(udp_packet.PayloadData);
+                }
+                else
+                {
+                    if (udp_packet != null && (udp_packet.SourcePort == 5055 || udp_packet.DestinationPort == 5055))
+                    {
+                        if (packet.PayloadPacket is IPv4Packet ip_packet && ip_packet.SourceAddress.ToString() == "5.188.125.60")
+                        {
+                            var output = new StreamWriter(Console.OpenStandardOutput());
+                            output.WriteLine("[onLogin][{status:\"New Packet\"}]");
+                            output.Flush();
+                        }
+
+                    }
                 }
             }
             catch
