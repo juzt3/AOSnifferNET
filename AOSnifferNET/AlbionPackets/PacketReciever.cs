@@ -87,12 +87,17 @@ namespace AOSnifferNET
                 {
                     if (udp_packet != null && (udp_packet.SourcePort == 5055 || udp_packet.DestinationPort == 5055))
                     {
-                        if (packet.PayloadPacket is IPv4Packet ip_packet && ip_packet.SourceAddress.ToString() == "5.188.125.60")
+                        if (packet.PayloadPacket is IPv4Packet ip_packet && (ip_packet.SourceAddress.ToString() == "5.188.125.60" || ip_packet.SourceAddress.ToString() == "5.45.187.118"))
                         {
                             var output = new StreamWriter(Console.OpenStandardOutput());
                             output.WriteLine("[onLogin][{status:\"New Packet\"}]");
                             output.Flush();
                         }
+                        //IPv4Packet ip_packet = (IPv4Packet)packet.PayloadPacket;
+                        //var output = new StreamWriter(Console.OpenStandardOutput());
+                        //output.WriteLine(ip_packet.SourceAddress.ToString());
+                        //output.WriteLine("[onLogin][{status:\"New Packet\"}]");
+                        //output.Flush();
 
                     }
                 }

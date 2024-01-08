@@ -555,6 +555,17 @@
         InteractWithTrackFinished,
         NewDynamicCompound,
         LegendaryItemDestroyed,
-        AttunementInfo
+        AttunementInfo,
+        TerritoryClaimRaidedRawEnergyCrystalResult,
+        CarryPowerCrystalExpiryWarning,
+        PowerCrystalExpired,
+        TerritoryRaidStart,
+        TerritoryRaidCancel,
+        TerritoryRaidFinished,
+        TerritoryRaidResult,
+        TerritoryMonolithActiveRaidStatus,
+        TerritoryMonolithActiveRaidCancelled,
+        MonolithEnergyStorageUpdate,
+        MonolithNextScheduledOpenWorldAttackUpdate
     }
 }

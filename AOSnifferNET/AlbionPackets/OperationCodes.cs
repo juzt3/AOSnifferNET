@@ -118,7 +118,6 @@
         GetAttackInfo,
         GetTerritorySeasonPoints,
         GetAttackSchedule,
-        ScheduleAttack,
         GetMatches,
         GetMatchDetails,
         JoinMatch,
@@ -449,7 +448,6 @@
         GetPvpChallengeData,
         ClaimPvpChallengeWeeklyReward,
         GetPersonalMightStats,
-        GetGvgSeasonGuildParticipationTime,
         AuctionGetLoadoutOffers,
         AuctionBuyLoadoutOffer,
         AccountDeletionRequest,
@@ -476,7 +474,6 @@
         GuildBannerChange,
         GuildGetOptionalStats,
         GuildSetOptionalStats,
-
         GetPlayerInfoForStalk,
         PayGoldForCharacterTypeChange,
         QuickSellAuctionQueryAction,
@@ -491,6 +488,12 @@
         HuntAbort,
         UseFindTrackSpellFromItemPrepare,
         InteractWithTrackStart,
-        InteractWithTrackCancel
+        InteractWithTrackCancel,
+        TerritoryRaidStart,
+        TerritoryRaidCancel,
+        TerritoryClaimRaidedRawEnergyCrystalResult,
+        GvGSeasonPlayerGuildParticipationDetails,
+        DailyMightBonus,
+        ClaimDailyMightBonus
     }
 }
