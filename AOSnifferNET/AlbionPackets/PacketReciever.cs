@@ -1,6 +1,7 @@
 ﻿using PacketDotNet;
 using SharpPcap;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 
@@ -34,6 +35,7 @@ namespace AOSnifferNET
                 throw new Exception("No interfaces found! Make sure NPcap is installed.");
             }
 
+            List<ILiveDevice> devicesOpened = new List<ILiveDevice>();
             Console.WriteLine("Start");
             // Escuche todos los dispositivos en la máquina local.
             foreach (ILiveDevice deviceSelected in allDevices)
@@ -60,17 +62,25 @@ namespace AOSnifferNET
                 }
 
 
-                Thread tPackets = new Thread(() =>
-                {
-                    Console.WriteLine($"Open... {deviceSelected.Description}");
-                    deviceSelected.OnPacketArrival += new PacketArrivalEventHandler(PacketHandler);
-                    deviceSelected.Open(DeviceModes.Promiscuous, 1);
-                    deviceSelected.StartCapture();
-                })
-                { };
-                tPackets.Start();
+                Console.WriteLine($"Open... {deviceSelected.Description}");
+                deviceSelected.OnPacketArrival += PacketHandler;
+                deviceSelected.Open(DeviceModes.Promiscuous, 1);
+                deviceSelected.StartCapture();
+                devicesOpened.Add(deviceSelected);
             }
-            Console.Read();
+            Console.ReadKey();
+
+            // Stoping Capture
+            foreach (ILiveDevice device in devicesOpened)
+            {
+                if (device != null && device.Started)
+                {
+                    device.StopCapture();
+                    device.OnPacketArrival -= PacketHandler;
+                    device.Close();
+                }
+            }
+
         }
 
         private void PacketHandler(object sender, PacketCapture e)
