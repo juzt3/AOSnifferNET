@@ -68,19 +68,44 @@ namespace AOSnifferNET
                 deviceSelected.StartCapture();
                 devicesOpened.Add(deviceSelected);
             }
-            Console.ReadKey();
 
-            // Stoping Capture
-            foreach (ILiveDevice device in devicesOpened)
+            Console.CancelKeyPress += (sender, e) =>
             {
-                if (device != null && device.Started)
-                {
-                    device.StopCapture();
-                    device.OnPacketArrival -= PacketHandler;
-                    device.Close();
-                }
-            }
+                Console.WriteLine("Ctrl+C or Ctrl+Break has been pressed. Performing closing tasks...");
 
+                // Stoping Capture
+                foreach (ILiveDevice device in devicesOpened)
+                {
+                    if (device != null && device.Started)
+                    {
+                        device.StopCapture();
+                        device.OnPacketArrival -= PacketHandler;
+                        device.Close();
+                    }
+                }
+
+                e.Cancel = true;
+            };
+
+            AppDomain.CurrentDomain.ProcessExit += (sender, e) =>
+            {
+                Console.WriteLine("The console window is closing. Performing closing tasks...");
+
+                // Stoping Capture
+                foreach (ILiveDevice device in devicesOpened)
+                {
+                    if (device != null && device.Started)
+                    {
+                        device.StopCapture();
+                        device.OnPacketArrival -= PacketHandler;
+                        device.Close();
+                    }
+                }
+
+                Console.WriteLine("Closure completed.");
+            };
+
+            Console.ReadKey();
         }
 
         private void PacketHandler(object sender, PacketCapture e)
