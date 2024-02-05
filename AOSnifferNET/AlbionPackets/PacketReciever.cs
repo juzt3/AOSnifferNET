@@ -87,9 +87,9 @@ namespace AOSnifferNET
                 e.Cancel = true;
             };
 
-            AppDomain.CurrentDomain.ProcessExit += (sender, e) =>
+            AppDomain.CurrentDomain.DomainUnload += (sender, e) =>
             {
-                Console.WriteLine("The console window is closing. Performing closing tasks...");
+                Console.WriteLine("Managing SIGTERM. Performing closing tasks...");
 
                 // Stoping Capture
                 foreach (ILiveDevice device in devicesOpened)
@@ -105,7 +105,8 @@ namespace AOSnifferNET
                 Console.WriteLine("Closure completed.");
             };
 
-            Console.ReadKey();
+            Console.Read();
+            Console.Read();
         }
 
         private void PacketHandler(object sender, PacketCapture e)
