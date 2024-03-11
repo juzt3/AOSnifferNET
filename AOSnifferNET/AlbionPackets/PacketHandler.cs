@@ -584,7 +584,11 @@ namespace AOSnifferNET
                 catch (Exception) { attackerEntityId = 0; }
                 int targetHealthUpdate = int.Parse(parameters[2].ToString());
                 int targetCurrentHealth;
-                try { targetCurrentHealth = int.Parse(parameters[3].ToString()); }
+                try 
+                {
+                    int targetHealth = int.Parse(parameters[3].ToString());
+                    targetCurrentHealth = Math.Max(0, (int)float.Parse(targetHealth.ToString()) + targetHealthUpdate);
+                }
                 catch (Exception) { targetCurrentHealth = 0; }
                 int targetEntityId = int.Parse(parameters[6].ToString());
 
@@ -972,7 +976,7 @@ namespace AOSnifferNET
             int currentEnergy = int.Parse(parameters[16].ToString());
             int maxEnergy = int.Parse(parameters[17].ToString());
 
-            int faction = int.Parse(parameters[43].ToString());
+            int faction = int.Parse(parameters[47].ToString());
 
             var jo = new OpJoin(cId, markId, cName, cluster, pos, angle, currentHealth, maxHealth, currentEnergy, maxEnergy, faction);
             printOperationInfo(jo, OperationCodes.Join, "onResponse");
