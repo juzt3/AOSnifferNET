@@ -976,7 +976,7 @@ namespace AOSnifferNET
             int currentEnergy = int.Parse(parameters[16].ToString());
             int maxEnergy = int.Parse(parameters[17].ToString());
 
-            int faction = int.Parse(parameters[47].ToString());
+            int faction = int.Parse(parameters[48].ToString());
 
             var jo = new OpJoin(cId, markId, cName, cluster, pos, angle, currentHealth, maxHealth, currentEnergy, maxEnergy, faction);
             printOperationInfo(jo, OperationCodes.Join, "onResponse");
