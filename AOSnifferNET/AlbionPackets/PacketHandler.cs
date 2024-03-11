@@ -752,7 +752,7 @@ namespace AOSnifferNET
             parameters.TryGetValue((byte)44, out oAlliance);
             string guild = oGuild == null ? "" : oGuild.ToString();
             string alliance = oAlliance == null ? "" : oAlliance.ToString();
-            Single[] pos = (Single[])parameters[13];
+            Single[] pos = (Single[])parameters[14];
             short[] items = new short[10];
             short[] skills;
             try
@@ -760,14 +760,14 @@ namespace AOSnifferNET
                 skills = new short[6];
             }
             catch { return; }
-            int faction = int.Parse(parameters[50].ToString());
-            int currentHealth = int.Parse(parameters[19].ToString());
-            int maxHealth = int.Parse(parameters[20].ToString());
+            int faction = int.Parse(parameters[51].ToString());
+            int currentHealth = int.Parse(parameters[20].ToString());
+            int maxHealth = int.Parse(parameters[21].ToString());
 
             int index = 0;
-            if (parameters[37].GetType() == typeof(Byte[]))
+            if (parameters[38].GetType() == typeof(Byte[]))
             {
-                Byte[] itemList = (Byte[])parameters[37];
+                Byte[] itemList = (Byte[])parameters[38];
                 foreach (Byte b in itemList)
                 {
                     if (index >= 10)
@@ -779,7 +779,7 @@ namespace AOSnifferNET
             }
             else
             {
-                Int16[] itemList = (Int16[])parameters[37];
+                Int16[] itemList = (Int16[])parameters[38];
                 foreach (Int16 b in itemList)
                 {
                     if (index >= 10)
@@ -791,9 +791,9 @@ namespace AOSnifferNET
             }
 
             index = 0;
-            if (parameters[40].GetType() == typeof(Byte[]))
+            if (parameters[41].GetType() == typeof(Byte[]))
             {
-                Byte[] skillList = (Byte[])parameters[40];
+                Byte[] skillList = (Byte[])parameters[41];
                 foreach (Byte b in skillList)
                 {
                     if (index >= 6)
@@ -805,7 +805,7 @@ namespace AOSnifferNET
             }
             else
             {
-                Int16[] skillList = (Int16[])parameters[40];
+                Int16[] skillList = (Int16[])parameters[41];
                 foreach (Int16 b in skillList)
                 {
                     if (index >= 6)
