@@ -75,7 +75,6 @@
         FarmableGetProduct,
         FarmableFill,
         TearDownConstructionSite,
-        CastleGateUse,
         AuctionCreateOffer,
         AuctionCreateRequest,
         AuctionGetOffers,
@@ -255,6 +254,7 @@
         UseLootChest,
         UseShrine,
         UseHellgateShrine,
+        GetSiegeBannerInfo,
         LaborerStartJob,
         LaborerTakeJobLoot,
         LaborerDismiss,
@@ -306,8 +306,8 @@
         ClientLowMemoryWarning,
         TerritoryClaimStart,
         TerritoryClaimCancel,
-        ClaimPowerCrystalStart,
-        ClaimPowerCrystalCancel,
+        DeliverCarriableObjectStart,
+        DeliverCarriableObjectCancel,
         TerritoryUpgradeWithPowerCrystal,
         RequestAppStoreProducts,
         VerifyProductPurchase,
@@ -433,8 +433,8 @@
         GetFactionWarfareCampaignData,
         ClaimFactionWarfareItemReward,
         SendMemoryConsumption,
-        PickupPowerCrystalStart,
-        PickupPowerCrystalCancel,
+        PickupCarriableObjectStart,
+        PickupCarriableObjectCancel,
         SetSavingChestLogsFlag,
         GetSavingChestLogsFlag,
         RegisterGuestAccount,
@@ -494,6 +494,9 @@
         TerritoryClaimRaidedRawEnergyCrystalResult,
         GvGSeasonPlayerGuildParticipationDetails,
         DailyMightBonus,
-        ClaimDailyMightBonus
+        ClaimDailyMightBonus,
+        GetFortificationGroupInfo,
+        UpgradeFortificationGroup,
+        GetClusterActivityChestEstimates
     }
 }
