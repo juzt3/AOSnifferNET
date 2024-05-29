@@ -15,7 +15,7 @@ namespace AOSnifferNET
 
         protected override void OnEvent(byte code, Dictionary<byte, object> parameters)
         {
-            if (code == 3 || code == 2)
+            if (code == 3)
             {
                 onEntityMovementEvent(parameters);
             }
@@ -567,9 +567,8 @@ namespace AOSnifferNET
             byte type = byte.Parse(parameters[5].ToString());
             byte tier = byte.Parse(parameters[7].ToString());
             Single[] pos = (Single[])parameters[8];
-            byte charges;
-            try { charges = byte.Parse(parameters[10].ToString()); }
-            catch (Exception) { charges = 0; }
+            parameters.TryGetValue((byte)10, out object _charges);
+            byte charges = _charges == null ? (byte)0 : byte.Parse(_charges.ToString()); 
             byte enchantment = byte.Parse(parameters[11].ToString());
 
             var nho = new HarvestableObject(id, type, tier, pos, charges, enchantment);
@@ -579,20 +578,15 @@ namespace AOSnifferNET
         {
             try
             {
-                int attackerEntityId;
-                try { attackerEntityId = int.Parse(parameters[0].ToString()); }
-                catch (Exception) { attackerEntityId = 0; }
-                int targetHealthUpdate = int.Parse(parameters[2].ToString());
-                int targetCurrentHealth;
-                try 
-                {
-                    int targetHealth = int.Parse(parameters[3].ToString());
-                    targetCurrentHealth = Math.Max(0, (int)float.Parse(targetHealth.ToString()) + targetHealthUpdate);
-                }
-                catch (Exception) { targetCurrentHealth = 0; }
+                parameters.TryGetValue((byte)0, out object _attEntityID);
+                int attackerEntityId = _attEntityID == null ? 0 : int.Parse(_attEntityID.ToString());
+                parameters.TryGetValue((byte)2, out object _tHU);
+                int targetHealthUpdate = _tHU == null ? 0 : int.Parse(_tHU.ToString());
+                parameters.TryGetValue((byte)3, out object _tH);
+                int targetHealth = _tH == null ? 0 : int.Parse(_tH.ToString());
                 int targetEntityId = int.Parse(parameters[6].ToString());
 
-                var hu = new evHealthUpdate(attackerEntityId, targetHealthUpdate, targetCurrentHealth, targetEntityId);
+                var hu = new evHealthUpdate(attackerEntityId, targetHealthUpdate, targetHealth, targetEntityId);
                 printEventInfo(hu, EventCodes.HealthUpdate);
             }
             catch (Exception e)
@@ -705,13 +699,11 @@ namespace AOSnifferNET
         {
             long playerId = long.Parse(parameters[0].ToString());
 
-            bool playerAttacking;
-            try { playerAttacking = bool.Parse(parameters[1].ToString()); }
-            catch (System.Collections.Generic.KeyNotFoundException) { playerAttacking = false; }
+            parameters.TryGetValue((byte)1, out object _playerStatus);
+            bool playerAttacking = _playerStatus == null ? false : bool.Parse(_playerStatus.ToString());
 
-            bool enemyAttacking;
-            try { enemyAttacking = bool.Parse(parameters[2].ToString()); }
-            catch { enemyAttacking = false; }
+            parameters.TryGetValue((byte)2, out object _enemyStatus);
+            bool enemyAttacking = _enemyStatus == null ? false: bool.Parse(_enemyStatus.ToString());
 
             var comUp = new InCombatStateUpdate(playerId, playerAttacking, enemyAttacking);
             printEventInfo(comUp, EventCodes.InCombatStateUpdate);
@@ -732,10 +724,18 @@ namespace AOSnifferNET
             //if (!parameters.ContainsKey(13))
             //    return;
 
-            int id = int.Parse(parameters[0].ToString());
+             int id = int.Parse(parameters[0].ToString());
             int typeId = int.Parse(parameters[1].ToString());
             Single[] pos = (Single[])parameters[7];
-            int health = int.Parse(parameters[13].ToString());
+            int health;
+            if (parameters.ContainsKey(13))
+            {
+                health = int.Parse(parameters[13].ToString());
+            }
+            else
+            {
+                health = int.Parse(parameters[14].ToString());
+            }
             int rarity = int.Parse(parameters[22].ToString());
 
             var mob = new evNewMob(id, typeId, pos, health, rarity);
@@ -848,18 +848,18 @@ namespace AOSnifferNET
         }
         private void onMount(Dictionary<byte, object> parameters)
         {
-            bool isMounting;
-            try { isMounting = bool.Parse(parameters[2].ToString()); }
-            catch { isMounting = false; }
-            bool quickMount;
-            try { quickMount = bool.Parse(parameters[3].ToString()); }
-            catch { quickMount = false; }
+            parameters.TryGetValue((byte)2, out object _isMounting);
+            bool isMounting = _isMounting == null ? false : bool.Parse(_isMounting.ToString());
+            parameters.TryGetValue((byte)3, out object _quickMount);
+            bool quickMount = _quickMount == null ? false: bool.Parse(_quickMount.ToString());
 
             var opm = new opMount(isMounting, quickMount);
             printOperationInfo(opm, OperationCodes.Mount, "onRequest");
         }
         private void onMoveOperation(Dictionary<byte, object> parameters)
         {
+            if (parameters == null)
+                return;
             long timestamp = long.Parse(parameters[0].ToString());
             /***
             long today_tick = DateTime.Now.Ticks;

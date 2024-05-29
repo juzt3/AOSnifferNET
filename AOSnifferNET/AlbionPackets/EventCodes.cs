@@ -28,6 +28,7 @@
         AttackBuilding,
         InventoryPutItem,
         InventoryDeleteItem,
+        InventoryState,
         NewCharacter,
         NewEquipmentItem,
         NewSiegeBannerItem,
@@ -582,6 +583,7 @@
         TerritoryAnnouncePlayerEjection,
         CastleGateSwitchUseStarted,
         CastleGateSwitchUseFinished,
-        FortificationBuildingWillDowngrade
+        FortificationBuildingWillDowngrade,
+        BotCommand
     }
 }
