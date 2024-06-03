@@ -129,12 +129,6 @@ namespace AOSnifferNET
                             output.WriteLine("[onLogin][{status:\"New Packet\"}]");
                             output.Flush();
                         }
-                        //IPv4Packet ip_packet = (IPv4Packet)packet.PayloadPacket;
-                        //var output = new StreamWriter(Console.OpenStandardOutput());
-                        //output.WriteLine(ip_packet.SourceAddress.ToString());
-                        //output.WriteLine("[onLogin][{status:\"New Packet\"}]");
-                        //output.Flush();
-
                     }
                 }
             }

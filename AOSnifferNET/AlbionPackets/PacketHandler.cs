@@ -15,26 +15,32 @@ namespace AOSnifferNET
 
         protected override void OnEvent(byte code, Dictionary<byte, object> parameters)
         {
-            if (code == 3)
-            {
-                onEntityMovementEvent(parameters);
-            }
-
-            parameters.TryGetValue((byte)252, out object val);
-            if (val == null) return;
-
-            if (!int.TryParse(val.ToString(), out int iCode)) return;
             EventCodes evCode = 0;
-            try
+            if (code == 1)
             {
-                evCode = (EventCodes)iCode;
-            }
-            catch (System.Collections.Generic.KeyNotFoundException)
+                parameters.TryGetValue((byte)252, out object val);
+                if (val == null) return;
+
+                if (!int.TryParse(val.ToString(), out int iCode)) return;
+                
+                try
+                {
+                    evCode = (EventCodes)iCode;
+                }
+                catch (System.Collections.Generic.KeyNotFoundException)
+                {
+                    debugPacket(parameters, iCode);
+                }
+            }else
             {
-                //debugPacket(parameters, iCode);
+                evCode = (EventCodes)code;
             }
+
             switch (evCode)
             {
+                case EventCodes.Move:
+                    onEntityMovementEvent(parameters);
+                    break;
                 case EventCodes.CharacterEquipmentChanged:
                     onCharacterEquipmentChanged(parameters);
                     break;
@@ -42,7 +48,7 @@ namespace AOSnifferNET
                     //onNewExit(parameters);
                     break;
                 case EventCodes.InventoryPutItem:
-                    //onInventoryPutItem(parameters);
+                    onInventoryPutItem(parameters);
                     break;
                 case EventCodes.NewEquipmentItem:
                     onNewGeneralItem(parameters, evCode);
@@ -150,7 +156,7 @@ namespace AOSnifferNET
                     printEventInfo(parameters, evCode);
                     break;
                 default:
-                    //printEventInfo(parameters, evCode);
+                    printEventInfo(parameters, evCode);
                     break;
             }
         }
