@@ -8,6 +8,7 @@
         Teleport,
         ChangeEquipment,
         HealthUpdate,
+        HealthUpdates,
         EnergyUpdate,
         DamageShieldUpdate,
         CraftingFocusUpdate,
