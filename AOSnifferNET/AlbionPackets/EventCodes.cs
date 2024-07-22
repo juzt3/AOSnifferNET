@@ -64,6 +64,7 @@
         HarvestCancel,
         HarvestFinished,
         TakeSilver,
+        RemoveSilver,
         ActionOnBuildingStart,
         ActionOnBuildingCancel,
         ActionOnBuildingFinished,
@@ -241,6 +242,7 @@
         PartyOnClusterPartyJoined,
         PartySetRoleFlag,
         PartyInviteOrJoinPlayerEquipmentInfo,
+        PartyReadyCheckUpdate,
         SpellCooldownUpdate,
         NewHellgateExitPortal,
         NewExpeditionExit,
@@ -498,6 +500,7 @@
         PartyStartHuntRequest,
         PartyStartHuntRequested,
         PartyStartHuntRequestAnswer,
+        PartyPlayerLeaveScheduled,
         GuildInviteDeclined,
         CancelMultiSpellSlots,
         NewVisualEventObject,
@@ -585,6 +588,8 @@
         CastleGateSwitchUseStarted,
         CastleGateSwitchUseFinished,
         FortificationBuildingWillDowngrade,
-        BotCommand
+        BotCommand,
+        JournalAchievementProgressUpdate,
+        JournalClaimableRewardUpdate
     }
 }

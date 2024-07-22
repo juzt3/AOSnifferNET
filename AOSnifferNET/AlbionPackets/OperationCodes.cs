@@ -214,14 +214,10 @@
         AllianceChangeGoldPaymentFlag,
         AllianceGetDetailInfo,
         GetIslandInfos,
-        AbandonMyIsland,
         BuyMyIsland,
         BuyGuildIsland,
-        AbandonGuildIsland,
         UpgradeMyIsland,
         UpgradeGuildIsland,
-        MoveMyIsland,
-        MoveGuildIsland,
         TerritoryFillNutrition,
         TeleportBack,
         PartyInvitePlayer,
@@ -497,6 +493,12 @@
         ClaimDailyMightBonus,
         GetFortificationGroupInfo,
         UpgradeFortificationGroup,
-        GetClusterActivityChestEstimates
+        CancelUpgradeFortificationGroup,
+        DowngradeFortificationGroup,
+        GetClusterActivityChestEstimates,
+        PartyReadyCheckBegin,
+        PartyReadyCheckUpdate,
+        ClaimAlbionJournalReward,
+        TrackAlbionJournalAchievements
     }
 }
