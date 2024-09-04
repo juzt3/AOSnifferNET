@@ -590,6 +590,7 @@
         FortificationBuildingWillDowngrade,
         BotCommand,
         JournalAchievementProgressUpdate,
-        JournalClaimableRewardUpdate
+        JournalClaimableRewardUpdate,
+        KeySync
     }
 }
