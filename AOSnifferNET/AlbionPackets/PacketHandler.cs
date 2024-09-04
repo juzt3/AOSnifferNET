@@ -106,6 +106,7 @@ namespace AOSnifferNET
                     break;
                 case EventCodes.InCombatStateUpdate:
                     onInCombatStateUpdate(parameters);
+                    printEventInfo(parameters, EventCodes.InCombatStateUpdate);
                     break;
                 case EventCodes.HealthUpdate:
                     onHealthUpdate(parameters);
@@ -246,10 +247,10 @@ namespace AOSnifferNET
                     onJoinResponse(parameters);
                     break;
                 case OperationCodes.AuctionGetOffers:
-                    onAuctionGetOffers_Res(parameters);
+                    //onAuctionGetOffers_Res(parameters);
                     break;
                 case OperationCodes.AuctionGetRequests:
-                    onAuctionGetRequests_Res(parameters);
+                    //onAuctionGetRequests_Res(parameters);
                     break;
                 case OperationCodes.AuctionGetItemAverageValue:
                     onAuctionGetItemAverageValue(parameters);
