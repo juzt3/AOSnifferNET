@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AOSnifferNET
 {
-    internal class evNewLoot
+    public class evNewLoot
     {
         public int lootId;
         public Single[] pos;

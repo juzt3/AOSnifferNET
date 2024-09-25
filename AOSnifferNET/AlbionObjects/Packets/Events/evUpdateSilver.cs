@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AOSnifferNET
 {
-    internal class evUpdateSilver
+    public class evUpdateSilver
     {
         public int id;
         public long currentSilver;

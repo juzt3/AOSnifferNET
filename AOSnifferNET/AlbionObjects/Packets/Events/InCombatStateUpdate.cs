@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AOSnifferNET
 {
-    internal class InCombatStateUpdate
+    public class InCombatStateUpdate
     {
         //InCombatStateUpdate: {"0":297731,"2":true,"252":255}
         public long playerId;

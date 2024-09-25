@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AOSnifferNET
 {
-    internal class evNewMountObject
+    public class evNewMountObject
     {
         public int id;
         public float[] pos;

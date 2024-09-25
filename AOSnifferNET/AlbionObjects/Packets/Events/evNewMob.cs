@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace AOSnifferNET
 {
     // map[0:830511 1:753 2:-1 6: 7:[-270 -68] 8:[-270 -68] 9:63249422 10:180 11:2.25 13:385 14:385 16:63249422 17:138 18:138 19:4 20:63249422 28:0 252:113]
-    internal class evNewMob
+    public class evNewMob
     {
         public int id;
         public int typeId;

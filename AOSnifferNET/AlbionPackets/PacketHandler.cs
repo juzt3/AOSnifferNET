@@ -9,16 +9,59 @@ using System.Linq;
 
 namespace AOSnifferNET
 {
-    class PacketHandler : PhotonParser
+    public class PacketHandler : PhotonParser
     {
+        public event RequestMove OnRequestMove;
+
+        public event EventEntityMove OnEventEntityMove;
+        public event EventCharacterEquipmentChanged OnEventCharacterEquipmentChanged;
+        public event EventNewExit OnEventNewExit;
+        public event EventInventoryPutItem OnEventInventoryPutItem;
+        public event EventNewItem OnNewEquipmentItem;
+        public event EventNewItem OnNewSimpleItem;
+        public event EventNewItem OnNewFurnitureItem;
+        public event EventNewItem OnNewJournalItem;
+        public event EventNewItem OnNewLaborerItem;
+        public event EventAttachItemContainer OnEventAttachItemContainer;
+        public event EventNewLoot OnEventNewLoot;
+        public event EventNewCharacter OnEventNewCharacter;
+        public event EventLeave OnEventevLeave;
+        public event EventMounted OnEventMounted;
+        public event EventNewMountObject OnEventNewMountObject;
+        public event EventNewMob OnEventNewMob;
+        public event EventJoinFinished OnEventJoinFinished;
+        public event EventUpdateSilver OnEventUpdateSilver;
+        public event EventHarvestableObject OnEventHarvestableObject;
+        public event EventHarvestableObjectList OnEventHarvestableObjectList;
+        public event EventHarvestableChangeState OnEventHarvestableChangeState;
+        public event EventMobChangeState OnEventMobChangeState;
+
+        public event EventInCombatStateUpdate OnEventInCombatStateUpdate;
+        public event EventHealthUpdate OnEventHealthUpdate;
+        public event EventAttack OnEventAttack;
+        public event EventNewPortalExit OnEventNewPortalExit;
+        public event EventActiveSpellEffectsUpdate OnEventActiveSpellEffectsUpdate;
+        public event EventHarvestStart OnEventHarvestStart;
+        public event EventHarvestFinished OnEventHarvestFinished;
+        public event EventNewFloatObject OnEventNewFloatObject;
+        public event EventNewFishingZoneObject OnEventNewFishingZoneObject;
+        public event EventFishingMiniGame OnEventFishingMiniGame;
+        public event EventNewBuilding OnEventNewBuilding;
+        public event EventEasyAntiCheatMessageToClient OnEventEasyAntiCheatMessageToClient;
+        public event EventCastHits OnEventCastHits;
+        public event EventCastStart OnEventCastStart;
+        public event EventCastTimeUpdate OnEventCastTimeUpdate;
+
         public PacketHandler() { }
 
         protected override void OnEvent(byte code, Dictionary<byte, object> parameters)
         {
             EventCodes evCode = 0;
+
             if (code == 1)
             {
                 parameters.TryGetValue((byte)252, out object val);
+
                 if (val == null) return;
 
                 if (!int.TryParse(val.ToString(), out int iCode)) return;
@@ -27,11 +70,12 @@ namespace AOSnifferNET
                 {
                     evCode = (EventCodes)iCode;
                 }
-                catch (System.Collections.Generic.KeyNotFoundException)
+                catch (KeyNotFoundException)
                 {
                     debugPacket(parameters, iCode);
                 }
-            }else
+            }
+            else
             {
                 evCode = (EventCodes)code;
             }
@@ -41,121 +85,151 @@ namespace AOSnifferNET
                 case EventCodes.Move:
                     onEntityMovementEvent(parameters);
                     break;
+
                 case EventCodes.CharacterEquipmentChanged:
                     onCharacterEquipmentChanged(parameters);
                     break;
+
                 case EventCodes.NewExit:
-                    //onNewExit(parameters);
+                    onNewExit(parameters);
                     break;
+
                 case EventCodes.InventoryPutItem:
                     onInventoryPutItem(parameters);
                     break;
+
                 case EventCodes.NewEquipmentItem:
-                    onNewGeneralItem(parameters, evCode);
+                    onNewEquipmentItem(parameters, evCode);
                     break;
+
                 case EventCodes.NewSimpleItem:
-                    onNewGeneralItem(parameters, evCode);
+                    onNewSimpleItem(parameters, evCode);
                     break;
+
                 case EventCodes.NewFurnitureItem:
-                    onNewGeneralItem(parameters, evCode);
+                    onNewFurnitureItem(parameters, evCode);
                     break;
+
                 case EventCodes.NewJournalItem:
-                    onNewGeneralItem(parameters, evCode);
+                    onNewJournalItem(parameters, evCode);
                     break;
+
                 case EventCodes.NewLaborerItem:
-                    onNewGeneralItem(parameters, evCode);
+                    onNewLaborerItem(parameters, evCode);
                     break;
+
                 case EventCodes.AttachItemContainer:
                     onAttachItemContainer(parameters);
                     break;
+
                 case EventCodes.NewLoot:
                     onNewLoot(parameters);
                     break;
+
                 case EventCodes.NewCharacter:
                     onNewCharacter(parameters);
                     break;
+
                 case EventCodes.Leave:
                     onLeaveEvent(parameters);
                     break;
+
                 case EventCodes.Mounted:
                     onMounted(parameters);
                     break;
+
                 case EventCodes.NewMountObject:
                     onNewMountObject(parameters);
                     break;
+
                 case EventCodes.NewMob:
                     onNewMob(parameters);
                     break;
+
                 case EventCodes.JoinFinished:
                     onJoinFinished();
                     break;
+
                 case EventCodes.UpdateMoney:
                     onUpdateSilver(parameters);
                     break;
+
                 case EventCodes.NewSimpleHarvestableObjectList:
                     onNewSimpleHarvestableObjectList(parameters);
                     break;
+
                 case EventCodes.NewHarvestableObject:
                     onNewHarvestableObject(parameters);
                     break;
+
                 case EventCodes.HarvestableChangeState:
                     onHarvestableChangeState(parameters);
                     break;
+
                 case EventCodes.MobChangeState:
                     onMobChangeState(parameters);
                     break;
+
                 case EventCodes.InCombatStateUpdate:
-                    onInCombatStateUpdate(parameters);
-                    printEventInfo(parameters, EventCodes.InCombatStateUpdate);
+                    onInCombatStateUpdate(parameters);                    
                     break;
+
                 case EventCodes.HealthUpdate:
                     onHealthUpdate(parameters);
                     break;
+
                 case EventCodes.Attack:
                     onAttack(parameters);
                     break;
+
                 case EventCodes.NewRandomDungeonExit:
                     onNewPortalExit(parameters);
                     break;
-                case EventCodes.ActiveSpellEffectsUpdate:
-                    // [10]evActiveSpellEffectsUpdate - map[0:655873 1:[685 279 339 509 399] 2:[100 389.11096 369.137 100 389.11096] 3:[100 233.6818 226.1142 100 233.6818] 4:[637945635939432036 637945670488995997 637945670488995997 637903462984937618 637945670488995997] 5:[1 10 10 1 10] 7:[75 - 110 36 73 - 110 36 73 - 110 36 9] 8:[208406056] 9:[9] 10:[0 0] 252:10]
-                    // 9 parece ser el tiempo restante
-                    //printEventInfo(parameters, evCode);
+
+                case EventCodes.ActiveSpellEffectsUpdate:                    
+                    onActiveSpellEffectsUpdate(parameters);
                     break;
+
                 case EventCodes.HarvestStart:
                     onHarvestStart(parameters);
                     break;
+
                 case EventCodes.HarvestFinished:
-                    //onHarvestFinished(parameters);
+                    onHarvestFinished(parameters);
                     break;
+
                 case EventCodes.NewFloatObject:
                     onNewFloatObject(parameters);
                     break;
+
                 case EventCodes.NewFishingZoneObject:
                     onNewFishingZoneObject(parameters);
                     break;
+
                 case EventCodes.FishingMiniGame:
-                    printEventInfo(parameters, evCode);
+                    onFishingMiniGame(parameters);
                     break;
+
                 case EventCodes.NewBuilding:
                     onNewBuilding(parameters);
                     break;
+
                 case EventCodes.EasyAntiCheatMessageToClient:
-                    //printEventInfo(parameters, evCode);
+                    onEventEasyAntiCheatMessageToClient(parameters);
                     break;
-                case EventCodes.CastHits:
-                    // {"0":88105,"1":95538,"2":4414,"3":1,"4":1,"252":20}
-                    // 0: target id 1: attacker id
-                    printEventInfo(parameters, evCode);
+
+                case EventCodes.CastHits:                   
+                    onEventCastHits(parameters);
                     break;
-                case EventCodes.CastStart:
-                    // CastStart: {"0":89514,"1":18668197,"2":[201.960464,220.702423],"4":18669497,"5":4400,"6":-1,"8":7,"9":0,"252":13}
-                    // 0: caster id 2:Spell direction pos
-                    printEventInfo(parameters, evCode);
+
+                case EventCodes.CastStart:                    
+                    onEventCastStart(parameters);
                     break;
+
                 case EventCodes.CastTimeUpdate:
-                    printEventInfo(parameters, evCode);
+                    onEventCastTimeUpdate(parameters);
                     break;
+
                 default:
                     printEventInfo(parameters, evCode);
                     break;
@@ -170,11 +244,12 @@ namespace AOSnifferNET
             if (!int.TryParse(val.ToString(), out int iCode)) return;
 
             OperationCodes opCode = 0;
+
             try
             {
                 opCode = (OperationCodes)iCode;
             }
-            catch (System.Collections.Generic.KeyNotFoundException)
+            catch (KeyNotFoundException)
             {
                 debugPacket(parameters, iCode);
             }
@@ -184,48 +259,62 @@ namespace AOSnifferNET
                 case OperationCodes.Move:
                     onMoveOperation(parameters);
                     break;
+
                 case OperationCodes.AuctionGetOffers:
-                    //onAuctionGetOffers_Req(parameters);
+                    onAuctionGetOffers_Req(parameters);
                     break;
+
                 case OperationCodes.AuctionGetRequests:
-                    //onAuctionGetRequests_Req(parameters);
+                    onAuctionGetRequests_Req(parameters);
                     break;
+
                 case OperationCodes.RegisterToObject:
-                    //onRegisterToObject(parameters);
+                    onRegisterToObject(parameters);
                     break;
+
                 case OperationCodes.UnRegisterFromObject:
-                    //onUnRegisterFromObject(parameters);
+                    onUnRegisterFromObject(parameters);
                     break;
+
                 case OperationCodes.AttackStart:
                     printOperationInfo(parameters, opCode, "onRequest");
                     break;
+
                 case OperationCodes.Mount:
                     onMount(parameters);
                     break;
+
                 case OperationCodes.MountCancel:
                     printOperationInfo(parameters, opCode, "onRequest");
                     break;
+
                 case OperationCodes.HarvestStart:
                     onReqHarvestStart(parameters);
                     break;
+
                 case OperationCodes.HarvestCancel:
                     // No llega al minar un cuerpo
                     printOperationInfo(parameters, opCode, "onRequest");
                     break;
+
                 case OperationCodes.ChangeCluster:
                     printOperationInfo(parameters, opCode, "onRequest");
                     break;
+
                 case OperationCodes.GetGameServerByCluster:
                     // Cuando le pide al servidor la direccion dns del cluster
                     // GetGameServerByCluster: {"0":"0000","255":10,"253":16}
                     printOperationInfo(parameters, opCode, "onRequest");
                     break;
+
                 case OperationCodes.GetReferralLink:
                     printOperationInfo(parameters, opCode, "onRequest");
                     break;
+
                 case OperationCodes.EasyAntiCheatMessageToServer:
                     //printOperationInfo(parameters, opCode, "onRequest");
                     break;
+
                 default:
                     //printOperationInfo(parameters, opCode, "onRequest");
                     break;
@@ -246,33 +335,40 @@ namespace AOSnifferNET
                 case OperationCodes.Join:
                     onJoinResponse(parameters);
                     break;
+
                 case OperationCodes.AuctionGetOffers:
-                    //onAuctionGetOffers_Res(parameters);
+                    onAuctionGetOffers_Res(parameters);
                     break;
+
                 case OperationCodes.AuctionGetRequests:
-                    //onAuctionGetRequests_Res(parameters);
+                    onAuctionGetRequests_Res(parameters);
                     break;
+
                 case OperationCodes.AuctionGetItemAverageValue:
                     onAuctionGetItemAverageValue(parameters);
                     break;
+
                 case OperationCodes.HarvestStart:
                     //printOperationInfo(parameters, opCode, "onResponse");
                     break;
+
                 case OperationCodes.HarvestCancel:
                     printOperationInfo(parameters, opCode, "onResponse");
                     break;
+
                 case OperationCodes.ChangeCluster:
                     printOperationInfo(parameters, opCode, "onResponse");
                     break;
+
                 case OperationCodes.GetGameServerByCluster:
                     // GetGameServerByCluster: {"0":"live01-win-28.dc02.albion.zone:5056","255":10,"253":16}
                     //printOperationInfo(parameters, opCode, "onResponse");
                     break;
+
                 default:
                     //printOperationInfo(parameters, opCode, "onResponse");
                     break;
             }
-
         }
 
         private void printEventInfo(Object obj, EventCodes evCode)
@@ -293,6 +389,7 @@ namespace AOSnifferNET
             //Console.WriteLine(outLine);
             //Console.Out.Flush();
         }
+
         private void printOperationInfo(Object obj, OperationCodes opCode, String typeInfo)
         {
             string jsonPacket;
@@ -315,6 +412,7 @@ namespace AOSnifferNET
         }
 
         #region OnEvent
+
         private void onNewBuilding(Dictionary<byte, object> parameters)
         {
             int packetID = int.Parse(parameters[0].ToString());
@@ -322,18 +420,22 @@ namespace AOSnifferNET
             Single[] pos = (Single[])parameters[4];
 
             var nb = new evNewBuilding(packetID, name, pos);
-            printEventInfo(nb, EventCodes.NewBuilding);
+            OnEventNewBuilding?.Invoke(nb);
 
+            printEventInfo(nb, EventCodes.NewBuilding);            
         }
+
         private void onCharacterEquipmentChanged(Dictionary<byte, object> parameters)
         {
             short[] items = new short[10];
             short[] skills = new short[6];
 
             int index = 0;
+
             if (parameters[2].GetType() == typeof(Byte[]))
             {
                 Byte[] itemList = (Byte[])parameters[2];
+
                 foreach (Byte b in itemList)
                 {
                     if (index >= 10)
@@ -357,9 +459,11 @@ namespace AOSnifferNET
             }
 
             index = 0;
+
             if (parameters[5].GetType() == typeof(Byte[]))
             {
                 Byte[] skillList = (Byte[])parameters[5];
+
                 foreach (Byte b in skillList)
                 {
                     if (index >= 6)
@@ -372,6 +476,7 @@ namespace AOSnifferNET
             else
             {
                 Int16[] skillList = (Int16[])parameters[5];
+
                 foreach (Int16 b in skillList)
                 {
                     if (index >= 6)
@@ -383,49 +488,83 @@ namespace AOSnifferNET
             }
 
             var eqc = new evCharacterEquipmentChanged(items, skills);
+            OnEventCharacterEquipmentChanged?.Invoke(eqc);
+
             printEventInfo(eqc, EventCodes.CharacterEquipmentChanged);
         }
+        
         private void onNewExit(Dictionary<byte, object> parameters)
         {
             Single[] entryPos = new Single[2];
+
             if (parameters.ContainsKey(2))
             {
                 entryPos = (Single[])parameters[2];
+                
                 var ne = new evNewExit(entryPos);
+                OnEventNewExit?.Invoke(ne);
+
                 printEventInfo(ne, EventCodes.NewExit);
             }
         }
+        
         private void onMobChangeState(Dictionary<byte, object> parameters)
         {
             int mobID = int.Parse(parameters[0].ToString());
             short enchantment = short.Parse(parameters[1].ToString());
 
             var cs = new evMobChangeState(mobID, enchantment);
+            OnEventMobChangeState?.Invoke(cs);
+
             printEventInfo(cs, EventCodes.MobChangeState);
         }
+        
         private void onInventoryPutItem(Dictionary<byte, object> parameters)
         {
             int itemID = int.Parse(parameters[0].ToString());
+
             var putItem = new evInventoryPutItem(itemID);
+            OnEventInventoryPutItem?.Invoke(putItem);
+
             printEventInfo(putItem, EventCodes.InventoryPutItem);
         }
+
         private void onNewFishingZoneObject(Dictionary<byte, object> parameters)
         {
             //NewFishingZoneObject: { "0":1182,"1":[253.4,52.8],"2":3,"3":2,"4":"FishingNodeSwarm","252":341} 0: objectID 1: zone pos 2:charges (not present when empty) 3:times fished from 4:zone tipe
             int objectID = int.Parse(parameters[0].ToString());
             Single[] zonePos = (Single[])parameters[1];
-            short charges = 0;
+
+            short charges = 0;            
+
             if (parameters.ContainsKey(2))
                 charges = short.Parse(parameters[2].ToString());
+
             short fished = 0;
+
             if (parameters.ContainsKey(3))
                 fished = short.Parse(parameters[3].ToString());
+
             string zoneType = parameters[4].ToString();
 
             var fishingZone = new evNewFishingZoneObject(objectID, zonePos, charges, fished, zoneType);
-            printEventInfo(fishingZone, EventCodes.NewFishingZoneObject);
+            OnEventNewFishingZoneObject?.Invoke(fishingZone);
 
+            printEventInfo(fishingZone, EventCodes.NewFishingZoneObject);
         }
+
+        private void onFishingMiniGame(Dictionary<byte, object> parameters)
+        {
+            int id = int.Parse(parameters[0].ToString());
+            Single[] pos = (Single[])parameters[1];
+            String type = (string)parameters[3].ToString();
+
+            var portal = new evFishingMiniGame();
+            OnEventFishingMiniGame?.Invoke(portal);
+
+            printEventInfo(portal, EventCodes.FishingMiniGame);
+        }
+
         private void onNewFloatObject(Dictionary<byte, object> parameters)
         {
             // NewFloatObject: { "0":665769,"1":[-190.193344,59.3336449],"2":298.5448,"3":632262,"4":1,"252":340} 0: bobber ID 1: bobber pos 2:angle
@@ -435,33 +574,41 @@ namespace AOSnifferNET
             float angleFromPlayer = float.Parse(parameters[2].ToString());
             int playerId = int.Parse(parameters[3].ToString());
             short fishingState = short.Parse(parameters[4].ToString());
-
             string readableState;
+
             switch (fishingState)
             {
                 case 1:
                     readableState = "Floating";
                     break;
+
                 case 2:
                     readableState = "Bitten";
                     break;
+
                 case 3:
                     readableState = "Minigame";
                     break;
+
                 case 4:
                     readableState = "Catched";
                     break;
+
                 case 5:
                     readableState = "Lost";
                     break;
+
                 default:
                     readableState = "";
                     break;
             }
 
             var bobber = new evNewFloatObject(bobberID, bobberPos, angleFromPlayer, playerId, readableState);
+            OnEventNewFloatObject?.Invoke(bobber);
+
             printEventInfo(bobber, EventCodes.NewFloatObject);
         }
+        
         private void onHarvestStart(Dictionary<byte, object> parameters)
         {
             //HarvestStart: { "0":144653,"1":638045717068106818,"2":638045717068106818,"3":1263,"5":2.0,"6":-1,"7":-1,"252":54} 5: tiempo para terminar de harvestear
@@ -469,9 +616,12 @@ namespace AOSnifferNET
             float time = float.Parse(parameters[5].ToString());
 
             var hs = new evHarvestStart(harvestableId, time);
+            OnEventHarvestStart?.Invoke(hs);
+
             printEventInfo(hs, EventCodes.HarvestStart);
         }
-        private void onNewGeneralItem(Dictionary<byte, object> parameters, EventCodes evCode)
+        
+        private evNewSimpleItem onNewItem(Dictionary<byte, object> parameters)
         {
             int objectID = int.Parse(parameters[0].ToString());
             int itemID = int.Parse(parameters[1].ToString());
@@ -485,9 +635,49 @@ namespace AOSnifferNET
             }
 
             var newItem = new evNewSimpleItem(objectID, itemID, amount, avgValue);
-            printEventInfo(newItem, evCode);
-
+            return newItem;
         }
+        
+        private void onNewEquipmentItem(Dictionary<byte, object> parameters, EventCodes evCode)
+        {
+            var data = onNewItem(parameters);
+            OnNewEquipmentItem?.Invoke(data);
+
+            printEventInfo(data, evCode);
+        }
+        
+        private void onNewSimpleItem(Dictionary<byte, object> parameters, EventCodes evCode)
+        {
+            var data = onNewItem(parameters);
+            OnNewSimpleItem?.Invoke(data);
+
+            printEventInfo(data, evCode);
+        }
+        
+        private void onNewFurnitureItem(Dictionary<byte, object> parameters, EventCodes evCode)
+        {
+            var data = onNewItem(parameters);
+            OnNewFurnitureItem?.Invoke(data);
+
+            printEventInfo(data, evCode);
+        }
+        
+        private void onNewJournalItem(Dictionary<byte, object> parameters, EventCodes evCode)
+        {
+            var data = onNewItem(parameters);
+            OnNewJournalItem?.Invoke(data);
+
+            printEventInfo(data, evCode);
+        }
+        
+        private void onNewLaborerItem(Dictionary<byte, object> parameters, EventCodes evCode)
+        {
+            var data = onNewItem(parameters);
+            OnNewLaborerItem?.Invoke(data);
+
+            printEventInfo(data, evCode);
+        }
+        
         private void onAttachItemContainer(Dictionary<byte, object> parameters)
         {
             int objectID = int.Parse(parameters[0].ToString());
@@ -498,16 +688,22 @@ namespace AOSnifferNET
             // donde 0 es el objectID
 
             var itemContainer = new evAttachItemContainer(objectID, ownerMarkID, itemsID);
+            OnEventAttachItemContainer?.Invoke(itemContainer);
+
             printEventInfo(itemContainer, EventCodes.AttachItemContainer);
         }
+        
         private void onNewLoot(Dictionary<byte, object> parameters)
         {
             int lootId = int.Parse(parameters[0].ToString());
             Single[] pos = (Single[])parameters[4];
 
             var newloot = new evNewLoot(lootId, pos);
+            OnEventNewLoot?.Invoke(newloot);
+
             printEventInfo(newloot, EventCodes.NewLoot);
         }
+        
         private void onHarvestFinished(Dictionary<byte, object> parameters)
         {
             //map[0:686375 1:637959518682696481 2:637959518687702927 3:2580 4:2 5:2 6:1 8:[] 9:[] 252:54]
@@ -516,27 +712,32 @@ namespace AOSnifferNET
             short gathered = short.Parse(parameters[4].ToString());
 
             short yield = 0;
+
             if (parameters.ContainsKey(5))
             {
                 yield = short.Parse(parameters[5].ToString());
             }
 
             short premium = 0;
+
             if (parameters.ContainsKey(6))
             {
                 premium = short.Parse(parameters[6].ToString());
             }
 
             short charges = 0;
+
             if (parameters.ContainsKey(7))
             {
                 charges = short.Parse(parameters[7].ToString());
             }
 
             var hf = new evHarvestFinished(playerId, harvestableId, gathered, yield, premium, charges);
-            printEventInfo(hf, EventCodes.HarvestFinished);
+            OnEventHarvestFinished?.Invoke(hf);
 
+            printEventInfo(hf, EventCodes.HarvestFinished);
         }
+        
         private void onMounted(Dictionary<byte, object> parameters)
         {
             int playerId = int.Parse(parameters[0].ToString());
@@ -546,17 +747,23 @@ namespace AOSnifferNET
                 isMounted = true;
 
             var mounted = new evMounted(playerId, isMounted);
+            OnEventMounted?.Invoke(mounted);
+
             printEventInfo(mounted, EventCodes.Mounted);
 
         }
+        
         public void onAttack(Dictionary<byte, object> parameters)
         {
             int attackerID = int.Parse(parameters[0].ToString());
             int targetID = int.Parse(parameters[2].ToString());
 
             var attackEv = new evAttack(attackerID, targetID);
+            OnEventAttack?.Invoke(attackEv);
+
             printEventInfo(attackEv, EventCodes.Attack);
         }
+        
         private void onNewPortalExit(Dictionary<byte, object> parameters)
         {
             int id = int.Parse(parameters[0].ToString());
@@ -564,7 +771,19 @@ namespace AOSnifferNET
             String type = (string)parameters[3].ToString();
 
             var portal = new evNewPortalExit(id, pos, type);
+            OnEventNewPortalExit?.Invoke(portal);
+
             printEventInfo(portal, EventCodes.NewRandomDungeonExit);
+        }
+
+        private void onActiveSpellEffectsUpdate(Dictionary<byte, object> parameters)
+        {
+            // [10]evActiveSpellEffectsUpdate - map[0:655873 1:[685 279 339 509 399] 2:[100 389.11096 369.137 100 389.11096] 3:[100 233.6818 226.1142 100 233.6818] 4:[637945635939432036 637945670488995997 637945670488995997 637903462984937618 637945670488995997] 5:[1 10 10 1 10] 7:[75 - 110 36 73 - 110 36 73 - 110 36 9] 8:[208406056] 9:[9] 10:[0 0] 252:10]
+
+            var ase = new evActiveSpellEffectsUpdate();
+            OnEventActiveSpellEffectsUpdate?.Invoke(ase);
+
+            printEventInfo(ase, EventCodes.NewRandomDungeonExit);
         }
 
         private void onNewHarvestableObject(Dictionary<byte, object> parameters)
@@ -579,8 +798,11 @@ namespace AOSnifferNET
             byte enchantment = byte.Parse(parameters[11].ToString());
 
             var nho = new HarvestableObject(id, type, tier, pos, charges, enchantment);
+            OnEventHarvestableObject?.Invoke(nho);
+
             printEventInfo(nho, EventCodes.NewHarvestableObject);
         }
+        
         private void onHealthUpdate(Dictionary<byte, object> parameters)
         {
             try
@@ -594,6 +816,8 @@ namespace AOSnifferNET
                 int targetEntityId = int.Parse(parameters[6].ToString());
 
                 var hu = new evHealthUpdate(attackerEntityId, targetHealthUpdate, targetHealth, targetEntityId);
+                OnEventHealthUpdate?.Invoke(hu);
+
                 printEventInfo(hu, EventCodes.HealthUpdate);
             }
             catch (Exception e)
@@ -601,20 +825,23 @@ namespace AOSnifferNET
                 Debug.WriteLine(e.StackTrace);
             }
         }
+        
         private void onLeaveEvent(Dictionary<byte, object> parameters)
         {
             int entityId = int.Parse(parameters[0].ToString());
+            
             var leave = new evLeave(entityId);
-
+            OnEventevLeave?.Invoke(leave);
+            
             printEventInfo(leave, EventCodes.Leave);
         }
-
+        
         private void onJoinFinished()
         {
             evJoinFinished jf = new evJoinFinished();
             printEventInfo(jf, EventCodes.JoinFinished);
         }
-
+        
         private void onUpdateSilver(Dictionary<byte, object> parameters)
         {
             int id = int.Parse(parameters[0].ToString());
@@ -626,7 +853,7 @@ namespace AOSnifferNET
 
             printEventInfo(us, EventCodes.UpdateMoney);
         }
-
+        
         private void onNewSimpleHarvestableObjectList(Dictionary<byte, object> parameters)
         {
             List<HarvestableObject> harvestableList = new List<HarvestableObject>();
@@ -679,9 +906,11 @@ namespace AOSnifferNET
             }
 
             var jol = new HarvestableObjectList(harvestableList);
+            OnEventHarvestableObjectList?.Invoke(jol);
+
             printEventInfo(jol, EventCodes.NewSimpleHarvestableObjectList);
         }
-
+        
         private void onHarvestableChangeState(Dictionary<byte, object> parameters)
         {
             int id = int.Parse(parameters[0].ToString());
@@ -701,7 +930,7 @@ namespace AOSnifferNET
             var change = new HarvestableChangeState(id, charges, enchantment);
             printEventInfo(change, EventCodes.HarvestableChangeState);
         }
-
+        
         private void onInCombatStateUpdate(Dictionary<byte, object> parameters)
         {
             long playerId = long.Parse(parameters[0].ToString());
@@ -713,9 +942,11 @@ namespace AOSnifferNET
             bool enemyAttacking = _enemyStatus == null ? false: bool.Parse(_enemyStatus.ToString());
 
             var comUp = new InCombatStateUpdate(playerId, playerAttacking, enemyAttacking);
+            OnEventInCombatStateUpdate?.Invoke(comUp);
+
             printEventInfo(comUp, EventCodes.InCombatStateUpdate);
         }
-
+        
         private void onNewMountObject(Dictionary<byte, object> parameters)
         {
             int id = int.Parse(parameters[0].ToString());
@@ -723,9 +954,11 @@ namespace AOSnifferNET
             byte[] ownerMarkId = (byte[])parameters[5];
 
             var newMount = new evNewMountObject(id, pos, ownerMarkId);
+            OnEventNewMountObject?.Invoke(newMount);
+
             printEventInfo(newMount, EventCodes.NewMountObject);
         }
-
+        
         private void onNewMob(Dictionary<byte, object> parameters)
         {
             //if (!parameters.ContainsKey(13))
@@ -746,9 +979,11 @@ namespace AOSnifferNET
             int rarity = int.Parse(parameters[22].ToString());
 
             var mob = new evNewMob(id, typeId, pos, health, rarity);
+            OnEventNewMob?.Invoke(mob);
+
             printEventInfo(mob, EventCodes.NewMob);
         }
-
+        
         private void onNewCharacter(Dictionary<byte, object> parameters)
         {
             int id = int.Parse(parameters[0].ToString());
@@ -762,16 +997,15 @@ namespace AOSnifferNET
             Single[] pos = (Single[])parameters[14];
             short[] items = new short[10];
             short[] skills;
-            try
-            {
-                skills = new short[6];
-            }
-            catch { return; }
+            
+            try { skills = new short[6]; } catch { return; }
+
             int faction = int.Parse(parameters[51].ToString());
             int currentHealth = int.Parse(parameters[20].ToString());
             int maxHealth = int.Parse(parameters[21].ToString());
 
             int index = 0;
+
             if (parameters[38].GetType() == typeof(Byte[]))
             {
                 Byte[] itemList = (Byte[])parameters[38];
@@ -798,6 +1032,7 @@ namespace AOSnifferNET
             }
 
             index = 0;
+
             if (parameters[41].GetType() == typeof(Byte[]))
             {
                 Byte[] skillList = (Byte[])parameters[41];
@@ -824,9 +1059,11 @@ namespace AOSnifferNET
             }
 
             var newChar = new evNewCharacter(id, nick, guild, alliance, pos, items, skills, faction, currentHealth, maxHealth);
+            OnEventNewCharacter?.Invoke(newChar);
+
             printEventInfo(newChar, EventCodes.NewCharacter);
         }
-
+        
         private void onEntityMovementEvent(Dictionary<byte, object> parameters)
         {
             int id = int.Parse(parameters[0].ToString());
@@ -835,6 +1072,7 @@ namespace AOSnifferNET
             Single posY = BitConverter.ToSingle(a, 13);
 
             var ent = new Entity(id, posX, posY);
+            OnEventEntityMove?.Invoke(ent);
 
             string strJson;
             strJson = JsonConvert.SerializeObject(ent);
@@ -843,9 +1081,57 @@ namespace AOSnifferNET
             output.WriteLine(outLine);
             output.Flush();
         }
+
+        private void onEventEasyAntiCheatMessageToClient(Dictionary<byte, object> parameters)
+        {
+            int packetID = int.Parse(parameters[0].ToString());
+
+            var nb = new evEasyAntiCheatMessageToClient();
+            OnEventEasyAntiCheatMessageToClient?.Invoke(nb);
+
+            printEventInfo(nb, EventCodes.EasyAntiCheatMessageToClient);
+        }
+
+        private void onEventCastHits(Dictionary<byte, object> parameters)
+        {
+            // {"0":88105,"1":95538,"2":4414,"3":1,"4":1,"252":20}
+            // 0: target id 1: attacker id
+
+            int packetID = int.Parse(parameters[0].ToString());
+
+            var nb = new evCastHits();
+            OnEventCastHits?.Invoke(nb);
+
+            printEventInfo(nb, EventCodes.CastHits);
+        }
+
+        private void onEventCastStart(Dictionary<byte, object> parameters)
+        {
+            // CastStart: {"0":89514,"1":18668197,"2":[201.960464,220.702423],"4":18669497,"5":4400,"6":-1,"8":7,"9":0,"252":13}
+            // 0: caster id 2:Spell direction pos
+
+            int packetID = int.Parse(parameters[0].ToString());
+
+            var nb = new evCastStart();
+            OnEventCastStart?.Invoke(nb);
+
+            printEventInfo(nb, EventCodes.CastStart);
+        }
+
+        private void onEventCastTimeUpdate(Dictionary<byte, object> parameters)
+        {
+            int packetID = int.Parse(parameters[0].ToString());
+
+            var nb = new evCastTimeUpdate();
+            OnEventCastTimeUpdate?.Invoke(nb);
+
+            printEventInfo(nb, EventCodes.CastTimeUpdate);
+        }
+
         #endregion
 
         #region onOperation Request
+
         private void onReqHarvestStart(Dictionary<byte, object> parameters)
         {
             int harvest_id = int.Parse(parameters[1].ToString());
@@ -853,6 +1139,7 @@ namespace AOSnifferNET
             printOperationInfo(hs, OperationCodes.HarvestStart, "onRequest");
 
         }
+        
         private void onMount(Dictionary<byte, object> parameters)
         {
             parameters.TryGetValue((byte)2, out object _isMounting);
@@ -863,11 +1150,14 @@ namespace AOSnifferNET
             var opm = new opMount(isMounting, quickMount);
             printOperationInfo(opm, OperationCodes.Mount, "onRequest");
         }
+        
         private void onMoveOperation(Dictionary<byte, object> parameters)
         {
             if (parameters == null)
                 return;
+
             long timestamp = long.Parse(parameters[0].ToString());
+
             /***
             long today_tick = DateTime.Now.Ticks;
             DateTime fechaHora_server = new DateTime(timestamp, DateTimeKind.Utc);
@@ -879,25 +1169,31 @@ namespace AOSnifferNET
             long diff = timestamp - today_tick;
             long espected_timestamp = today_tick + diff;
             ***/
+
             float[] pos = (float[])parameters[1];
             float angle = (float)parameters[2];
             float[] target = (float[])parameters[3];
             float speed = (float)parameters[4];
 
-            opMove _ = new opMove(timestamp, pos, angle, target, speed);
-            printOperationInfo(_, OperationCodes.Move, "onRequest");
-        }
+            opMove mov = new opMove(timestamp, pos, angle, target, speed);
+            OnRequestMove?.Invoke(mov);
 
+            printOperationInfo(mov, OperationCodes.Move, "onRequest");
+        }
+        
         private void onAuctionGetOffers_Req(Dictionary<byte, object> parameters)
         {
             int id = int.Parse(parameters[0].ToString());
             Int16[] itemsID = new short[10];
+
             if (parameters.ContainsKey(6))
             {
                 itemsID = (Int16[])parameters[6];
             }
+
             string category = parameters[1].ToString();
             string subcategory = parameters[2].ToString();
+
             short quality;
             try { quality = short.Parse(parameters[3].ToString()); }
             catch (System.FormatException) { quality = 0; }
@@ -914,12 +1210,13 @@ namespace AOSnifferNET
 
             printOperationInfo(agor, OperationCodes.AuctionGetOffers, "onRequest");
         }
-
+        
         private void onAuctionGetRequests_Req(Dictionary<byte, object> parameters)
         {
             // {"0":867,"1":"accessories","2":"bag","3":"5","4":0,"5":"8","7":"3","8":0,"9":1,"10":50,"12":true,"253":77}
             int id = int.Parse(parameters[0].ToString());
             Int16[] itemsID = new short[10];
+
             if (parameters.ContainsKey(6))
             {
                 itemsID = (Int16[])parameters[6];
@@ -943,23 +1240,25 @@ namespace AOSnifferNET
 
             printOperationInfo(agrr, OperationCodes.AuctionGetRequests, "onRequest");
         }
-
+        
         private void onRegisterToObject(Dictionary<byte, object> parameters)
         {
             long id = long.Parse(parameters[0].ToString());
             var reg = new opRegisterToObject(id);
             printOperationInfo(reg, OperationCodes.RegisterToObject, "onRequest");
         }
-
+        
         private void onUnRegisterFromObject(Dictionary<byte, object> parameters)
         {
             long id = long.Parse(parameters[0].ToString());
             var unreg = new UnRegisterFromObject(id);
             printOperationInfo(unreg, OperationCodes.UnRegisterFromObject, "onRequest");
         }
+        
         #endregion
 
         #region onOperation Response
+
         private void onJoinResponse(Dictionary<byte, object> parameters)
         {
             // [onResponse][2] Join: {"0":229611,"1":"HldB6eRwfU6UYy3c3Cuenw==","2":"Anyalgo","3":9,"4":22,"5":1,"6":"AwAJAw==","7":"AA8CAA==",
@@ -969,7 +1268,9 @@ namespace AOSnifferNET
             string cName = parameters[2].ToString();
             string cluster = parameters[8].ToString();
             float[] pos = (float[])parameters[9];
+
             float angle = 0;
+
             if (parameters.ContainsKey(10))
                 angle = float.Parse(parameters[10].ToString());
             else
@@ -994,12 +1295,13 @@ namespace AOSnifferNET
             string line = JsonConvert.SerializeObject(parameters[0]);
             JArray offers = JArray.Parse(line);
             List<AuctionItems> offerList = new List<AuctionItems>();
+
             foreach (JValue value in offers)
             {
                 JObject offer = JObject.Parse(value.ToString());
                 long id = ((long)offer.GetValue("Id"));
-                long unitPrice = ((long)offer.GetValue("UnitPriceSilver"));
-                long totalPrice = ((long)offer.GetValue("TotalPriceSilver"));
+                long unitPrice = ((long)offer.GetValue("UnitPriceSilver")) / 10000;
+                long totalPrice = ((long)offer.GetValue("TotalPriceSilver")) / 10000;
                 int amount = ((int)offer.GetValue("Amount"));
                 short tier = ((short)offer.GetValue("Tier"));
                 bool isFinished = ((bool)offer.GetValue("IsFinished"));
@@ -1030,12 +1332,13 @@ namespace AOSnifferNET
             string line = JsonConvert.SerializeObject(parameters[0]);
             JArray requests = JArray.Parse(line);
             List<AuctionItems> requestList = new List<AuctionItems>();
+
             foreach (JValue value in requests)
             {
                 JObject request = JObject.Parse(value.ToString());
                 long id = ((long)request.GetValue("Id"));
-                long unitPrice = ((long)request.GetValue("UnitPriceSilver"));
-                long totalPrice = ((long)request.GetValue("TotalPriceSilver"));
+                long unitPrice = ((long)request.GetValue("UnitPriceSilver")) / 10000;
+                long totalPrice = ((long)request.GetValue("TotalPriceSilver")) / 10000;
                 int amount = ((int)request.GetValue("Amount"));
                 short tier = ((short)request.GetValue("Tier"));
                 bool isFinished = ((bool)request.GetValue("IsFinished"));
@@ -1066,10 +1369,11 @@ namespace AOSnifferNET
             string line = parameters[0].ToString();
             int len = line.Length;
             long average = long.Parse(line.Substring(0, len - 4));
+
             var averageObj = new opAuctionGetItemAverageValue(average);
             printOperationInfo(averageObj, OperationCodes.AuctionGetItemAverageValue, "onResponse");
-
         }
+
         #endregion
     }
 }

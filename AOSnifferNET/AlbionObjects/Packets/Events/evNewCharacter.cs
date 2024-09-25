@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AOSnifferNET
 {
-    internal class evNewCharacter
+    public class evNewCharacter
     {
         public int id;
         public string nick;

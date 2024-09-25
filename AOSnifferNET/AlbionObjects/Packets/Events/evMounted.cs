@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AOSnifferNET
 {
-    internal class evMounted
+    public class evMounted
     {
         public int playerId;
         public bool isMounted;

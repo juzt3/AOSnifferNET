@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace AOSnifferNET
 {
     // [0:1871612 1:[70 -201] 3:MOUNTAIN_GREEN_RANDOM_EXIT_10x10_PORTAL_SOLO_B 4:true 5:0 11:0 12:1 252:301]
-    internal class evNewPortalExit
+    public class evNewPortalExit
     {
         public int id;
         public Single[] pos;
