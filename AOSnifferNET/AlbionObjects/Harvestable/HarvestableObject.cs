@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AOSnifferNET
 {
-    internal class HarvestableObject
+    public class HarvestableObject
     {
         public int id;
         public byte type;

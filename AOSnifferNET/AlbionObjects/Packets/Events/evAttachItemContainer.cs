@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AOSnifferNET
 { 
-    internal class evAttachItemContainer
+    public class evAttachItemContainer
     {
         public int objectID;
         public byte[] ownerMarkID;

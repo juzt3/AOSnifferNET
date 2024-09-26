@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AOSnifferNET
 {
-    internal class UnRegisterFromObject
+    public class UnRegisterFromObject
     {
         public long objectId;
 

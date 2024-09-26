@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AOSnifferNET
 {
-    internal class opAuctionGetItemAverageValue
+    public class opAuctionGetItemAverageValue
     {
         public long itemAverageValue;
 

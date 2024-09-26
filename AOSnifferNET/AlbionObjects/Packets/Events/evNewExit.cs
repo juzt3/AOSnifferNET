@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace AOSnifferNET
 {
     // {"0":1,"1":"P0qQVW1rgESBs9jwDb9+ZA==","2":[-15.0,35.0],"252":205}
-    internal class evNewExit
+    public class evNewExit
     {
         public Single[] pos;
 

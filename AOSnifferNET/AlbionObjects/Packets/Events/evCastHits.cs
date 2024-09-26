@@ -6,13 +6,7 @@ using System.Threading.Tasks;
 
 namespace AOSnifferNET
 {
-    public class evJoinFinished
+    public class evCastHits
     {
-        public bool joinFinished;
-
-        public evJoinFinished()
-        {
-            joinFinished = true;
-        }
     }
 }

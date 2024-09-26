@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AOSnifferNET
 {
-    internal class evCharacterEquipmentChanged
+    public class evCharacterEquipmentChanged
     {
         public short[] items;
         public short[] skills;

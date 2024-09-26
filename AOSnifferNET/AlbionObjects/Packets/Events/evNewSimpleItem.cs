@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AOSnifferNET
 {
-    internal class evNewSimpleItem
+    public class evNewSimpleItem
     {
         public int objectID;
         public int itemID;

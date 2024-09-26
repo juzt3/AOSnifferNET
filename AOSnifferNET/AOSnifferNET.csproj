@@ -111,6 +111,7 @@
     </Reference>
     <Reference Include="SharpPcap, Version=6.2.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpPcap.6.2.5\lib\netstandard2.0\SharpPcap.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -151,8 +152,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlbionObjects\AuctionItems.cs" />
+    <Compile Include="AlbionObjects\Packets\Events\evActiveSpellEffectsUpdate.cs" />
     <Compile Include="AlbionObjects\Packets\Events\evAttack.cs" />
+    <Compile Include="AlbionObjects\Packets\Events\evCastHits.cs" />
+    <Compile Include="AlbionObjects\Packets\Events\evCastStart.cs" />
+    <Compile Include="AlbionObjects\Packets\Events\evCastTimeUpdate.cs" />
     <Compile Include="AlbionObjects\Packets\Events\evCharacterEquipmentChanged.cs" />
+    <Compile Include="AlbionObjects\Packets\Events\evEasyAntiCheatMessageToClient.cs" />
+    <Compile Include="AlbionObjects\Packets\Events\evFishingMiniGame.cs" />
     <Compile Include="AlbionObjects\Packets\Events\evInventoryPutItem.cs" />
     <Compile Include="AlbionObjects\Packets\Events\evMobChangeState.cs" />
     <Compile Include="AlbionObjects\Packets\Events\evNewBuilding.cs" />
@@ -188,6 +195,7 @@
     <Compile Include="AlbionObjects\Packets\Operations\Response\opAuctionGetOffersResponse.cs" />
     <Compile Include="AlbionObjects\Packets\Operations\Response\OpJoin.cs" />
     <Compile Include="AlbionObjects\Packets\Special\Entity.cs" />
+    <Compile Include="AlbionPackets\PacketDelegate.cs" />
     <Compile Include="AlbionPackets\EventCodes.cs" />
     <Compile Include="AlbionPackets\OperationCodes.cs" />
     <Compile Include="AlbionPackets\PacketReciever.cs" />

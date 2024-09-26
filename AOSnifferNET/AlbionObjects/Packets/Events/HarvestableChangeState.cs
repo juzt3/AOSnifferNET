@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AOSnifferNET
 {
-    internal class HarvestableChangeState
+    public class HarvestableChangeState
     {
         public int id;
         public int charges;

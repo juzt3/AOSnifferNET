@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AOSnifferNET
 {
-    internal class evMobChangeState
+    public class evMobChangeState
     {
         public int mobID;
         public short enchantment;

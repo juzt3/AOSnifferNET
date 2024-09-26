@@ -10,7 +10,7 @@ namespace AOSnifferNET
     //\"HasBuyerFetched\":false,\"HasSellerFetched\":false,\"SellerCharacterId\":\"cc61fb20-fa4a-4fe2-843e-1f71f25d0f4a\",\"SellerName\":\"SoloAGG\",
     //\"BuyerCharacterId\":null,\"BuyerName\":null,\"ItemTypeId\":\"T8_FURNITUREITEM_TROPHY_ORE\",\"ItemGroupTypeId\":\"T8_FURNITUREITEM_TROPHY_ORE\",
     //\"EnchantmentLevel\":0,\"QualityLevel\":1,\"Expires\":\"2022-06-17T01:47:22.125773\",\"ReferenceId\":\"8f62ce8b-3521-48dc-a429-32671c5aaeeb\"}
-    internal class AuctionItems
+    public class AuctionItems
     {
         public long id;
         public long unitPriceSilver;

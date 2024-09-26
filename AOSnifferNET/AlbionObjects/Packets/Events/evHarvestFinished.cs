@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AOSnifferNET
 {
-    internal class evHarvestFinished
+    public class evHarvestFinished
     {
         public int playerId;
         public int harvestableId;

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AOSnifferNET
 {
-    internal class evLeave
+    public class evLeave
     {
         public int entityId;
 

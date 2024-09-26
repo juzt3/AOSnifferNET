@@ -7,14 +7,15 @@ using System.Threading;
 
 namespace AOSnifferNET
 {
-    class PacketReciever
+    public class PacketReciever
     {
-        readonly PacketHandler photonParser;
+        readonly public PacketHandler photonParser;
         readonly Thread photonThread;
 
         public PacketReciever()
         {
             photonParser = new PacketHandler();
+
             try
             {
                 photonThread = new Thread(() => CreateListener()) { };
@@ -30,6 +31,7 @@ namespace AOSnifferNET
         {
 
             var allDevices = CaptureDeviceList.Instance;
+
             if (allDevices.Count < 1)
             {
                 throw new Exception("No interfaces found! Make sure NPcap is installed.");
@@ -37,6 +39,7 @@ namespace AOSnifferNET
 
             List<ILiveDevice> devicesOpened = new List<ILiveDevice>();
             Console.WriteLine("Start");
+
             // Escuche todos los dispositivos en la máquina local.
             foreach (ILiveDevice deviceSelected in allDevices)
             {
@@ -114,7 +117,9 @@ namespace AOSnifferNET
             try
             {
                 var packet = Packet.ParsePacket(e.GetPacket().LinkLayerType, e.GetPacket().Data);
+
                 UdpPacket udp_packet = packet.Extract<UdpPacket>();
+
                 if (udp_packet != null && (udp_packet.SourcePort == 5056 || udp_packet.DestinationPort == 5056))
                 {
                     photonParser.ReceivePacket(udp_packet.PayloadData);

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AOSnifferNET
 {
-    internal class evNewFloatObject
+    public class evNewFloatObject
     {
         public int bobberID;
         public Single[] bobberPos;

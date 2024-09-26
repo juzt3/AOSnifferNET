@@ -2,7 +2,7 @@
 
 namespace AOSnifferNET
 {
-    internal class evInventoryPutItem
+    public class evInventoryPutItem
     {
         public int itemID;
 

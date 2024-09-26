@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AOSnifferNET
 {
-    internal class evAttack
+    public class evAttack
     {
         public int attackerID;
         public int targetID;
