@@ -3,8 +3,19 @@
 namespace AOSnifferNET
 {
     public delegate void RequestMove(opMove data);
+    public delegate void RequestMount(opMount data);
+    public delegate void RequestHarvestStart(opHarvestStart data);
+    public delegate void RequestAuctionGetOffers(opAuctionGetAny data);
+    public delegate void RequestAuctionGetRequests(opAuctionGetAny data);
+    public delegate void RequestRegisterToObject(opRegisterToObject data);
+    public delegate void RequestUnRegisterFromObject(UnRegisterFromObject data);
 
-    public delegate void EventEntityMove(Entity data);
+    public delegate void ResponseJoin(OpJoin data);
+    public delegate void ResponseAuctionGetOffers(opAuctionGetOffersResponse data);
+    public delegate void ResponseAuctionGetRequests(opAuctionGetRequestsResponse data);
+    public delegate void ResponseAuctionGetItemAverageValue(opAuctionGetItemAverageValue data);
+
+    public delegate void EventMove(Entity data);
     public delegate void EventCharacterEquipmentChanged(evCharacterEquipmentChanged data);
     public delegate void EventNewExit(evNewExit data);
     public delegate void EventInventoryPutItem(evInventoryPutItem data);
@@ -17,7 +28,7 @@ namespace AOSnifferNET
     public delegate void EventNewMountObject(evNewMountObject data);
     public delegate void EventNewMob(evNewMob data);
     public delegate void EventJoinFinished(evJoinFinished data);
-    public delegate void EventUpdateSilver(evUpdateSilver data);
+    public delegate void EventUpdateMoney(evUpdateSilver data);
     public delegate void EventHarvestableObject(HarvestableObject data);
     public delegate void EventHarvestableObjectList(HarvestableObjectList data);
     public delegate void EventHarvestableChangeState(HarvestableChangeState data);

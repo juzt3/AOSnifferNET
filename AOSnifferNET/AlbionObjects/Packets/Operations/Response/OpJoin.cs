@@ -16,7 +16,7 @@
     // 46: items equiped
     // 49: skills
     // 60: previous cluster
-    internal class OpJoin
+    public class OpJoin
     {
         public int characterId;
         public byte[] markId;

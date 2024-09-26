@@ -1,6 +1,6 @@
 ﻿namespace AOSnifferNET
 {
-    internal class opHarvestStart
+    public class opHarvestStart
     {
         public int harvestableId;
 

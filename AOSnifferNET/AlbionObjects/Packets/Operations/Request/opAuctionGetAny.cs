@@ -3,7 +3,7 @@
 namespace AOSnifferNET
 {
     // {"0":8,"1":"accessories","2":"bag","3":"5","4":0,"5":"8","6":'query text', "7":0,"8":"3","9":50,"11":0,"12":true,"253":76} (id, category, subcategory, quality, unknown, tier, unknown, enhancement...
-    internal class opAuctionGetAny
+    public class opAuctionGetAny
     {
         public int id;
         public Int16[] itemsID;
