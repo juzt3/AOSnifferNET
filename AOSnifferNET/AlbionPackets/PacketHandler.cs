@@ -35,7 +35,7 @@ namespace AOSnifferNET
             {
                 evCode = (EventCodes)code;
             }
-
+            
             switch (evCode)
             {
                 case EventCodes.Move:
@@ -45,7 +45,7 @@ namespace AOSnifferNET
                     onCharacterEquipmentChanged(parameters);
                     break;
                 case EventCodes.NewExit:
-                    //onNewExit(parameters);
+                    onNewExit(parameters);
                     break;
                 case EventCodes.InventoryPutItem:
                     onInventoryPutItem(parameters);
@@ -71,7 +71,7 @@ namespace AOSnifferNET
                 case EventCodes.NewLoot:
                     onNewLoot(parameters);
                     break;
-                case EventCodes.NewCharacter:
+                case EventCodes.NewCharacter: // Encrypted
                     onNewCharacter(parameters);
                     break;
                 case EventCodes.Leave:
@@ -226,8 +226,11 @@ namespace AOSnifferNET
                 case OperationCodes.EasyAntiCheatMessageToServer:
                     //printOperationInfo(parameters, opCode, "onRequest");
                     break;
+                case OperationCodes.CastStart:
+                    printOperationInfo(parameters, opCode, "onRequest");
+                    break;
                 default:
-                    //printOperationInfo(parameters, opCode, "onRequest");
+                    printOperationInfo(parameters, opCode, "onRequest");
                     break;
             }
 

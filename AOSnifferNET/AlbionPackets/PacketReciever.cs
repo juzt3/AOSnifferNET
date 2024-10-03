@@ -44,10 +44,10 @@ namespace AOSnifferNET
                 {
                     if (deviceSelected.Description.ToLower().Contains("virtual"))
                         continue;
-
+                    
                     if (deviceSelected.Description.ToLower().Contains("loopback"))
                         continue;
-
+                    
                     if (deviceSelected.Description.ToLower().Contains("wan"))
                         continue;
 
