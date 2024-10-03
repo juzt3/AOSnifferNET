@@ -106,7 +106,6 @@ namespace AOSnifferNET
                     break;
                 case EventCodes.InCombatStateUpdate:
                     onInCombatStateUpdate(parameters);
-                    printEventInfo(parameters, EventCodes.InCombatStateUpdate);
                     break;
                 case EventCodes.HealthUpdate:
                     onHealthUpdate(parameters);
