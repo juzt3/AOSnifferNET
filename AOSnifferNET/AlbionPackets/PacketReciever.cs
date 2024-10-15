@@ -14,11 +14,11 @@ namespace AOSnifferNET
 
         public PacketReciever()
         {
-            photonParser = new PacketHandler();
+            this.photonParser = new PacketHandler();
             try
             {
-                photonThread = new Thread(() => CreateListener()) { };
-                photonThread.Start();
+                this.photonThread = new Thread(() => this.CreateListener()) { };
+                this.photonThread.Start();
             }
             catch (Exception ea)
             {
@@ -28,85 +28,72 @@ namespace AOSnifferNET
 
         private void CreateListener()
         {
-
-            var allDevices = CaptureDeviceList.Instance;
-            if (allDevices.Count < 1)
-            {
-                throw new Exception("No interfaces found! Make sure NPcap is installed.");
-            }
-
             List<ILiveDevice> devicesOpened = new List<ILiveDevice>();
-            Console.WriteLine("Start");
-            // Escuche todos los dispositivos en la máquina local.
-            foreach (ILiveDevice deviceSelected in allDevices)
+            Console.WriteLine("Start Listening for Devices...");
+
+            bool running = true;
+            while (running)
             {
-                if (!string.IsNullOrEmpty(deviceSelected.Description))
+                try
                 {
-                    if (deviceSelected.Description.ToLower().Contains("virtual"))
-                        continue;
-                    
-                    if (deviceSelected.Description.ToLower().Contains("loopback"))
-                        continue;
-                    
-                    if (deviceSelected.Description.ToLower().Contains("wan"))
-                        continue;
+                    CaptureDeviceList.Instance.Refresh();
+                    var allDevices = CaptureDeviceList.Instance;
+                    if (allDevices.Count < 1)
+                    {
+                        throw new Exception("No interfaces found! Make sure NPcap is installed.");
+                    }
 
-                    if (deviceSelected.Description.ToLower().Contains("bluetooth"))
-                        continue;
+                    // Verificar todos los dispositivos en cada iteración del bucle
+                    foreach (ILiveDevice deviceSelected in allDevices)
+                    {
+                        // Verifica si el dispositivo ya está en la lista
+                        if (!devicesOpened.Contains(deviceSelected))
+                        {
+                            Console.WriteLine($"Open... {deviceSelected.Description}");
+                            deviceSelected.OnPacketArrival += this.PacketHandler;
+                            deviceSelected.Open(DeviceModes.Promiscuous, 1);
+                            deviceSelected.StartCapture();
+                            devicesOpened.Add(deviceSelected);
+                        }
+                    }
 
-                    if (deviceSelected.Description.ToLower().Contains("pseudo"))
-                        continue;
-
-                    if (deviceSelected.Description.ToLower().Contains("filter"))
-                        continue;
+                    // Espera unos segundos antes de volver a buscar nuevos dispositivos
+                    Thread.Sleep(1000);
                 }
-
-
-                Console.WriteLine($"Open... {deviceSelected.Description}");
-                deviceSelected.OnPacketArrival += PacketHandler;
-                deviceSelected.Open(DeviceModes.Promiscuous, 1);
-                deviceSelected.StartCapture();
-                devicesOpened.Add(deviceSelected);
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Error while listening for devices: {e.Message}");
+                }
             }
 
             Console.CancelKeyPress += (sender, e) =>
             {
                 Console.WriteLine("Ctrl+C or Ctrl+Break has been pressed. Performing closing tasks...");
-
-                // Stoping Capture
-                foreach (ILiveDevice device in devicesOpened)
-                {
-                    if (device != null && device.Started)
-                    {
-                        device.StopCapture();
-                        device.OnPacketArrival -= PacketHandler;
-                        device.Close();
-                    }
-                }
-
+                StopDevices(devicesOpened);
+                running = false;
                 e.Cancel = true;
             };
 
             AppDomain.CurrentDomain.DomainUnload += (sender, e) =>
             {
                 Console.WriteLine("Managing SIGTERM. Performing closing tasks...");
-
-                // Stoping Capture
-                foreach (ILiveDevice device in devicesOpened)
-                {
-                    if (device != null && device.Started)
-                    {
-                        device.StopCapture();
-                        device.OnPacketArrival -= PacketHandler;
-                        device.Close();
-                    }
-                }
-
+                StopDevices(devicesOpened);
+                running = false;
                 Console.WriteLine("Closure completed.");
             };
+        }
 
-            Console.Read();
-            Console.Read();
+        private void StopDevices(List<ILiveDevice> devicesOpened)
+        {
+            foreach (ILiveDevice device in devicesOpened)
+            {
+                if (device != null && device.Started)
+                {
+                    device.StopCapture();
+                    device.OnPacketArrival -= this.PacketHandler;
+                    device.Close();
+                }
+            }
         }
 
         private void PacketHandler(object sender, PacketCapture e)
@@ -117,7 +104,7 @@ namespace AOSnifferNET
                 UdpPacket udp_packet = packet.Extract<UdpPacket>();
                 if (udp_packet != null && (udp_packet.SourcePort == 5056 || udp_packet.DestinationPort == 5056))
                 {
-                    photonParser.ReceivePacket(udp_packet.PayloadData);
+                    this.photonParser.ReceivePacket(udp_packet.PayloadData);
                 }
                 else
                 {
@@ -136,6 +123,11 @@ namespace AOSnifferNET
             {
                 return;
             }
+        }
+
+        public string getLastPacket()
+        {
+            return this.photonParser.getLastPacket();
         }
     }
 }

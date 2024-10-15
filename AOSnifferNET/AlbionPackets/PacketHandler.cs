@@ -11,6 +11,8 @@ namespace AOSnifferNET
 {
     class PacketHandler : PhotonParser
     {
+        private Queue<String> packets = new Queue<string>();
+
         public PacketHandler() { }
 
         protected override void OnEvent(byte code, Dictionary<byte, object> parameters)
@@ -156,7 +158,7 @@ namespace AOSnifferNET
                     printEventInfo(parameters, evCode);
                     break;
                 default:
-                    printEventInfo(parameters, evCode);
+                    //printEventInfo(parameters, evCode);
                     break;
             }
         }
@@ -229,7 +231,7 @@ namespace AOSnifferNET
                     printOperationInfo(parameters, opCode, "onRequest");
                     break;
                 default:
-                    printOperationInfo(parameters, opCode, "onRequest");
+                    //printOperationInfo(parameters, opCode, "onRequest");
                     break;
             }
 
@@ -289,6 +291,7 @@ namespace AOSnifferNET
             }
             */
             string outLine = "[onEvent][" + (int)evCode + "] " + evCode + ": " + jsonPacket;
+            this.packets.Enqueue(outLine);
             var output = new StreamWriter(Console.OpenStandardOutput());
             output.WriteLine(outLine);
             output.Flush();
@@ -300,6 +303,7 @@ namespace AOSnifferNET
             string jsonPacket;
             jsonPacket = JsonConvert.SerializeObject(obj);
             string outLine = "[" + typeInfo + "][" + (int)opCode + "] " + opCode + ": " + jsonPacket;
+            this.packets.Enqueue(outLine);
             var output = new StreamWriter(Console.OpenStandardOutput());
             output.WriteLine(outLine);
             output.Flush();
@@ -314,6 +318,11 @@ namespace AOSnifferNET
             string outLine = iCode + ": " + jsonPacket;
             Console.WriteLine(outLine);
             Console.Out.Flush();
+        }
+
+        public string getLastPacket()
+        {
+            return this.packets.Dequeue();
         }
 
         #region OnEvent
@@ -551,7 +560,7 @@ namespace AOSnifferNET
             printEventInfo(mounted, EventCodes.Mounted);
 
         }
-        public void onAttack(Dictionary<byte, object> parameters)
+        private void onAttack(Dictionary<byte, object> parameters)
         {
             int attackerID = int.Parse(parameters[0].ToString());
             int targetID = int.Parse(parameters[2].ToString());
