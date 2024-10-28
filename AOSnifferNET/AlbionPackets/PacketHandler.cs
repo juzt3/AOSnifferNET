@@ -192,10 +192,10 @@ namespace AOSnifferNET
                     //onAuctionGetRequests_Req(parameters);
                     break;
                 case OperationCodes.RegisterToObject:
-                    //onRegisterToObject(parameters);
+                    onRegisterToObject(parameters);
                     break;
                 case OperationCodes.UnRegisterFromObject:
-                    //onUnRegisterFromObject(parameters);
+                    onUnRegisterFromObject(parameters);
                     break;
                 case OperationCodes.AttackStart:
                     printOperationInfo(parameters, opCode, "onRequest");
@@ -270,7 +270,7 @@ namespace AOSnifferNET
                     break;
                 case OperationCodes.GetGameServerByCluster:
                     // GetGameServerByCluster: {"0":"live01-win-28.dc02.albion.zone:5056","255":10,"253":16}
-                    //printOperationInfo(parameters, opCode, "onResponse");
+                    printOperationInfo(parameters, opCode, "onResponse");
                     break;
                 default:
                     //printOperationInfo(parameters, opCode, "onResponse");
