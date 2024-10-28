@@ -121,6 +121,7 @@
         GetMatchDetails,
         JoinMatch,
         LeaveMatch,
+        GetClusterInstanceInfoForStaticCluster,
         ChangeChatSettings,
         LogoutStart,
         LogoutCancel,
@@ -265,7 +266,7 @@
         FriendCancelnvitation,
         FriendRemove,
         InventoryStack,
-        InventorySort,
+        InventoryReorder,
         InventoryDropAll,
         InventoryAddToStacks,
         EquipmentItemChangeSpell,
@@ -499,6 +500,7 @@
         PartyReadyCheckBegin,
         PartyReadyCheckUpdate,
         ClaimAlbionJournalReward,
-        TrackAlbionJournalAchievements
+        TrackAlbionJournalAchievements,
+        RequestOutlandsTeleportationUsage
     }
 }

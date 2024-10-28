@@ -591,6 +591,14 @@
         BotCommand,
         JournalAchievementProgressUpdate,
         JournalClaimableRewardUpdate,
-        KeySync
+        KeySync,
+        LocalQuestAreaGone,
+        DynamicTemplate,
+        DynamicTemplateForcedStateChange,
+        NewOutlandsTeleportationPortal,
+        NewOutlandsTeleportationReturnPortal,
+        OutlandsTeleportationBindingCleared,
+        OutlandsTeleportationReturnPortalUpdateEvent,
+        PlayerUsedOutlandsTeleportationPortal
     }
 }
