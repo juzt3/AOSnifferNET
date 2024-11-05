@@ -43,6 +43,12 @@ namespace AOSnifferNET
                 case EventCodes.Move:
                     onEntityMovementEvent(parameters);
                     break;
+                case EventCodes.HealthUpdates: // Actualizacion de varias entidades TODO
+                    printEventInfo(parameters, evCode);
+                    break;
+                case EventCodes.HealthUpdate:
+                    onHealthUpdate(parameters);
+                    break;
                 case EventCodes.CharacterEquipmentChanged:
                     onCharacterEquipmentChanged(parameters);
                     break;
@@ -109,9 +115,6 @@ namespace AOSnifferNET
                 case EventCodes.InCombatStateUpdate:
                     onInCombatStateUpdate(parameters);
                     break;
-                case EventCodes.HealthUpdate:
-                    onHealthUpdate(parameters);
-                    break;
                 case EventCodes.Attack:
                     onAttack(parameters);
                     break;
@@ -154,7 +157,16 @@ namespace AOSnifferNET
                     // 0: caster id 2:Spell direction pos
                     printEventInfo(parameters, evCode);
                     break;
+                case EventCodes.CastCancel: // Cuando se cancela un casteo TODO
+                    printEventInfo(parameters, evCode);
+                    break;
                 case EventCodes.CastTimeUpdate:
+                    printEventInfo(parameters, evCode);
+                    break;
+                case EventCodes.RegenerationHealthChanged:
+                    printEventInfo(parameters, evCode);
+                    break;
+                case EventCodes.RegenerationHealthEnergyComboChanged:
                     printEventInfo(parameters, evCode);
                     break;
                 default:
