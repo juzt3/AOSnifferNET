@@ -43,7 +43,10 @@ namespace AOSnifferNET
                 case EventCodes.Move:
                     onEntityMovementEvent(parameters);
                     break;
-                case EventCodes.HealthUpdates: // Actualizacion de varias entidades TODO
+                case EventCodes.FactionWarfareClusterState:
+                    printEventInfo(parameters, evCode); 
+                    break;
+                case EventCodes.HealthUpdates:
                     printEventInfo(parameters, evCode);
                     break;
                 case EventCodes.HealthUpdate:
@@ -79,7 +82,8 @@ namespace AOSnifferNET
                 case EventCodes.NewLoot:
                     onNewLoot(parameters);
                     break;
-                case EventCodes.NewCharacter: // Encrypted
+                case EventCodes.NewCharacter: // Encrypted position
+                    debugEventInfo(parameters, evCode);
                     onNewCharacter(parameters);
                     break;
                 case EventCodes.Leave:
@@ -100,10 +104,14 @@ namespace AOSnifferNET
                 case EventCodes.UpdateMoney:
                     onUpdateSilver(parameters);
                     break;
+                case EventCodes.NewSimpleHarvestableObject:
+                    onNewSimpleHarvestableObject(parameters);
+                    break;
                 case EventCodes.NewSimpleHarvestableObjectList:
                     onNewSimpleHarvestableObjectList(parameters);
                     break;
                 case EventCodes.NewHarvestableObject:
+                    printEventInfo(parameters, evCode);
                     onNewHarvestableObject(parameters);
                     break;
                 case EventCodes.HarvestableChangeState:
@@ -120,11 +128,6 @@ namespace AOSnifferNET
                     break;
                 case EventCodes.NewRandomDungeonExit:
                     onNewPortalExit(parameters);
-                    break;
-                case EventCodes.ActiveSpellEffectsUpdate:
-                    // [10]evActiveSpellEffectsUpdate - map[0:655873 1:[685 279 339 509 399] 2:[100 389.11096 369.137 100 389.11096] 3:[100 233.6818 226.1142 100 233.6818] 4:[637945635939432036 637945670488995997 637945670488995997 637903462984937618 637945670488995997] 5:[1 10 10 1 10] 7:[75 - 110 36 73 - 110 36 73 - 110 36 9] 8:[208406056] 9:[9] 10:[0 0] 252:10]
-                    // 9 parece ser el tiempo restante
-                    //printEventInfo(parameters, evCode);
                     break;
                 case EventCodes.HarvestStart:
                     onHarvestStart(parameters);
@@ -257,19 +260,28 @@ namespace AOSnifferNET
             if (!int.TryParse(val.ToString(), out int iCode)) return;
 
             OperationCodes opCode = (OperationCodes)iCode;
+
             switch (opCode)
             {
                 case OperationCodes.Join:
                     onJoinResponse(parameters);
                     break;
                 case OperationCodes.AuctionGetOffers:
-                    //onAuctionGetOffers_Res(parameters);
+                    onAuctionGetOffers_Res(parameters);
+                    printOperationInfo(parameters, opCode, "OnResponse");
                     break;
                 case OperationCodes.AuctionGetRequests:
-                    //onAuctionGetRequests_Res(parameters);
+                    onAuctionGetRequests_Res(parameters);
+                    printOperationInfo(parameters, opCode, "OnResponse");
                     break;
                 case OperationCodes.AuctionGetItemAverageValue:
                     onAuctionGetItemAverageValue(parameters);
+                    break;
+                case OperationCodes.AuctionGetItemAverageStats:
+                    printOperationInfo(parameters, opCode, "OnResponse");
+                    break;
+                case OperationCodes.AuctionBuyOffer:
+                    printOperationInfo(parameters, opCode, "OnResponse");
                     break;
                 case OperationCodes.HarvestStart:
                     //printOperationInfo(parameters, opCode, "onResponse");
@@ -290,20 +302,27 @@ namespace AOSnifferNET
             }
 
         }
+        private void debugEventInfo(Dictionary<byte, object> parameters, EventCodes evCode)
+        {
+            string jsonPacket;
+            jsonPacket = JsonConvert.SerializeObject(parameters.ToArray());
+
+            Console.WriteLine("[OnEvent]{1}: {2}", evCode, jsonPacket);
+        }
+        private void debugOperationInfo(Dictionary<byte, object> parameters, OperationCodes opCode, String typeInfo)
+        {
+            string jsonPacket;
+            jsonPacket = JsonConvert.SerializeObject(parameters.ToArray());
+
+            Console.WriteLine("[{0}]{1}: {2}", typeInfo, opCode, jsonPacket);
+        }
 
         private void printEventInfo(Object obj, EventCodes evCode)
         {
             string jsonPacket;
             jsonPacket = JsonConvert.SerializeObject(obj);
-            /*
-            if (jsonPacket.IndexOf("[") != -1)
-            {
-                string outLine = "[onEvent][" + (int)evCode + "] " + evCode + ": " + jsonPacket;
-                Console.WriteLine(outLine);
-            }
-            */
             string outLine = "[onEvent][" + (int)evCode + "] " + evCode + ": " + jsonPacket;
-            this.packets.Enqueue(outLine);
+            //this.packets.Enqueue(outLine);
             var output = new StreamWriter(Console.OpenStandardOutput());
             output.WriteLine(outLine);
             output.Flush();
@@ -315,7 +334,7 @@ namespace AOSnifferNET
             string jsonPacket;
             jsonPacket = JsonConvert.SerializeObject(obj);
             string outLine = "[" + typeInfo + "][" + (int)opCode + "] " + opCode + ": " + jsonPacket;
-            this.packets.Enqueue(outLine);
+            //this.packets.Enqueue(outLine);
             var output = new StreamWriter(Console.OpenStandardOutput());
             output.WriteLine(outLine);
             output.Flush();
@@ -599,9 +618,15 @@ namespace AOSnifferNET
             Single[] pos = (Single[])parameters[8];
             parameters.TryGetValue((byte)10, out object _charges);
             byte charges = _charges == null ? (byte)0 : byte.Parse(_charges.ToString()); 
-            byte enchantment = byte.Parse(parameters[11].ToString());
+            byte enchantment = (byte)0;
 
-            var nho = new HarvestableObject(id, type, tier, pos, charges, enchantment);
+            if (parameters.ContainsKey(10))
+                enchantment = byte.Parse(parameters[10].ToString());
+
+            if (parameters.ContainsKey(11))
+                charges = byte.Parse(parameters[11].ToString());
+
+            var nho = new HarvestableObject(id, type, tier, pos, enchantment, charges);
             printEventInfo(nho, EventCodes.NewHarvestableObject);
         }
         private void onHealthUpdate(Dictionary<byte, object> parameters)
@@ -703,6 +728,19 @@ namespace AOSnifferNET
 
             var jol = new HarvestableObjectList(harvestableList);
             printEventInfo(jol, EventCodes.NewSimpleHarvestableObjectList);
+        }
+
+        private void onNewSimpleHarvestableObject(Dictionary<byte, object> parameters)
+        {
+            int id = int.Parse(parameters[0].ToString());
+            byte type = byte.Parse(parameters[1].ToString());
+            byte tier = byte.Parse(parameters[2].ToString());
+            Single[] loc = (Single[])parameters[3];
+            Byte count = byte.Parse(parameters[4].ToString());
+            byte charges = (byte)0;
+
+            var nho = new HarvestableObject(id, type, tier, loc, count, charges);
+            printEventInfo(nho, EventCodes.NewHarvestableObject);
         }
 
         private void onHarvestableChangeState(Dictionary<byte, object> parameters)
@@ -859,12 +897,7 @@ namespace AOSnifferNET
 
             var ent = new Entity(id, posX, posY);
 
-            string strJson;
-            strJson = JsonConvert.SerializeObject(ent);
-            string outLine = "[onEntityMovementEvent]: " + strJson;
-            var output = new StreamWriter(Console.OpenStandardOutput());
-            output.WriteLine(outLine);
-            output.Flush();
+            printEventInfo(ent, EventCodes.Move);
         }
         #endregion
 

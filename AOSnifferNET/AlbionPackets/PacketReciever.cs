@@ -56,7 +56,6 @@ namespace AOSnifferNET
                             devicesOpened.Add(deviceSelected);
                         }
                     }
-
                     // Espera unos segundos antes de volver a buscar nuevos dispositivos
                     Thread.Sleep(1000);
                 }
@@ -64,23 +63,23 @@ namespace AOSnifferNET
                 {
                     Console.WriteLine($"Error while listening for devices: {e.Message}");
                 }
+
+                Console.CancelKeyPress += (sender, e) =>
+                {
+                    Console.WriteLine("Ctrl+C or Ctrl+Break has been pressed. Performing closing tasks...");
+                    StopDevices(devicesOpened);
+                    running = false;
+                    e.Cancel = true;
+                };
+
+                AppDomain.CurrentDomain.DomainUnload += (sender, e) =>
+                {
+                    Console.WriteLine("Managing SIGTERM. Performing closing tasks...");
+                    StopDevices(devicesOpened);
+                    running = false;
+                    Console.WriteLine("Closure completed.");
+                };
             }
-
-            Console.CancelKeyPress += (sender, e) =>
-            {
-                Console.WriteLine("Ctrl+C or Ctrl+Break has been pressed. Performing closing tasks...");
-                StopDevices(devicesOpened);
-                running = false;
-                e.Cancel = true;
-            };
-
-            AppDomain.CurrentDomain.DomainUnload += (sender, e) =>
-            {
-                Console.WriteLine("Managing SIGTERM. Performing closing tasks...");
-                StopDevices(devicesOpened);
-                running = false;
-                Console.WriteLine("Closure completed.");
-            };
         }
 
         private void StopDevices(List<ILiveDevice> devicesOpened)
