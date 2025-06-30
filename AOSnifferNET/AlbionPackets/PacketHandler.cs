@@ -12,8 +12,6 @@ namespace AOSnifferNET
 {
     class PacketHandler : PhotonParser
     {
-        private Queue<String> packets = new Queue<string>();
-
         public PacketHandler() { }
 
         protected override void OnEvent(byte code, Dictionary<byte, object> parameters)
@@ -25,7 +23,7 @@ namespace AOSnifferNET
                 if (val == null) return;
 
                 if (!int.TryParse(val.ToString(), out int iCode)) return;
-                
+
                 try
                 {
                     evCode = (EventCodes)iCode;
@@ -149,9 +147,6 @@ namespace AOSnifferNET
                 case EventCodes.NewBuilding:
                     onNewBuilding(parameters);
                     break;
-                case EventCodes.EasyAntiCheatMessageToClient:
-                    //printEventInfo(parameters, evCode);
-                    break;
                 case EventCodes.CastHits:
                     // {"0":88105,"1":95538,"2":4414,"3":1,"4":1,"252":20}
                     // 0: target id 1: attacker id
@@ -177,15 +172,15 @@ namespace AOSnifferNET
                 case EventCodes.PlayerCounts:
                     printEventInfo(parameters, evCode);
                     break;
-                    /*
-                     * [onEvent][163] KnockedDown: {"0":269,"1":17730179,"2":269,"3":"Yolonia","4":"GoldenLotus","252":163}
-                     * [onEvent][161] KilledPlayer: {"0":269,"1":269,"2":"Yolonia","252":161}
-                     * [onEvent][162] Died: {"0":[180.9496,81.944],"1":269,"2":"Yolonia","3":269,"4":"Yolonia","5":"GoldenLotus","6":true,"252":162}
+                /*
+                    * [onEvent][163] KnockedDown: {"0":269,"1":17730179,"2":269,"3":"Yolonia","4":"GoldenLotus","252":163}
+                    * [onEvent][161] KilledPlayer: {"0":269,"1":269,"2":"Yolonia","252":161}
+                    * [onEvent][162] Died: {"0":[180.9496,81.944],"1":269,"2":"Yolonia","3":269,"4":"Yolonia","5":"GoldenLotus","6":true,"252":162}
 
-                        163: KnockedDown: 0: knocked char id 1: unknown 2: attacker char id 3: attacker name 4: attacker guild
-                        161: KilledPlayer: 0: char id 1: char id 2: name
-                        162: Died: 0: position 1: dead char id 2: name 3: attacker char id 4: attacker name 5: attacker guild
-                    */
+                    163: KnockedDown: 0: knocked char id 1: unknown 2: attacker char id 3: attacker name 4: attacker guild
+                    161: KilledPlayer: 0: char id 1: char id 2: name
+                    162: Died: 0: position 1: dead char id 2: name 3: attacker char id 4: attacker name 5: attacker guild
+                */
                 case EventCodes.KnockedDown:
                 case EventCodes.KilledPlayer:
                 case EventCodes.Died:
@@ -194,8 +189,13 @@ namespace AOSnifferNET
                 case EventCodes.KeySync:
                     onKeySync(parameters);
                     break;
+                case EventCodes.OpenWorldAttackEnd:
+                case EventCodes.OpenWorldAttackStart:
+                case EventCodes.OpenWorldAttackScheduleStart:
+                    printEventInfo(parameters, evCode);
+                    break;
                 default:
-                    //printEventInfo(parameters, evCode);
+                    printEventInfo(parameters, evCode);
                     break;
                 }
             }
@@ -261,14 +261,11 @@ namespace AOSnifferNET
                     case OperationCodes.GetReferralLink:
                         printOperationInfo(parameters, opCode, "onRequest");
                         break;
-                    case OperationCodes.EasyAntiCheatMessageToServer:
-                        //printOperationInfo(parameters, opCode, "onRequest");
-                        break;
                     case OperationCodes.CastStart:
                         printOperationInfo(parameters, opCode, "onRequest");
                         break;
                     default:
-                        //printOperationInfo(parameters, opCode, "onRequest");
+                        printOperationInfo(parameters, opCode, "onRequest");
                         break;
                 }
 
@@ -289,15 +286,13 @@ namespace AOSnifferNET
                         onJoinResponse(parameters);
                         break;
                     case OperationCodes.Move:
-                        onMoveOperation(parameters);
+                        printOperationInfo(parameters, opCode, "OnResponse");
                         break;
                     case OperationCodes.AuctionGetOffers:
                         onAuctionGetOffers_Res(parameters);
-                        printOperationInfo(parameters, opCode, "OnResponse");
                         break;
                     case OperationCodes.AuctionGetRequests:
                         onAuctionGetRequests_Res(parameters);
-                        printOperationInfo(parameters, opCode, "OnResponse");
                         break;
                     case OperationCodes.AuctionGetItemAverageValue:
                         onAuctionGetItemAverageValue(parameters);
@@ -322,7 +317,7 @@ namespace AOSnifferNET
                         printOperationInfo(parameters, opCode, "onResponse");
                         break;
                     default:
-                        //printOperationInfo(parameters, opCode, "onResponse");
+                        printOperationInfo(parameters, opCode, "onResponse");
                         break;
                 }
 
@@ -347,7 +342,6 @@ namespace AOSnifferNET
                 string jsonPacket;
                 jsonPacket = JsonConvert.SerializeObject(obj);
                 string outLine = "[onEvent][" + (int)evCode + "] " + evCode + ": " + jsonPacket;
-                //this.packets.Enqueue(outLine);
                 var output = new StreamWriter(Console.OpenStandardOutput());
                 output.WriteLine(outLine);
                 output.Flush();
@@ -359,7 +353,6 @@ namespace AOSnifferNET
                 string jsonPacket;
                 jsonPacket = JsonConvert.SerializeObject(obj);
                 string outLine = "[" + typeInfo + "][" + (int)opCode + "] " + opCode + ": " + jsonPacket;
-                //this.packets.Enqueue(outLine);
                 var output = new StreamWriter(Console.OpenStandardOutput());
                 output.WriteLine(outLine);
                 output.Flush();
@@ -374,11 +367,6 @@ namespace AOSnifferNET
                 string outLine = iCode + ": " + jsonPacket;
                 Console.WriteLine(outLine);
                 Console.Out.Flush();
-            }
-
-            public string getLastPacket()
-            {
-                return this.packets.Dequeue();
             }
 
             #region OnEvent

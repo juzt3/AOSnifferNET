@@ -123,10 +123,5 @@ namespace AOSnifferNET
                 return;
             }
         }
-
-        public string getLastPacket()
-        {
-            return this.photonParser.getLastPacket();
-        }
     }
 }
