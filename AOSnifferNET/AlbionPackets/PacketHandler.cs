@@ -194,6 +194,10 @@ namespace AOSnifferNET
                 case EventCodes.OpenWorldAttackScheduleStart:
                     printEventInfo(parameters, evCode);
                     break;
+                case EventCodes.QuestProgressInfo:
+                case EventCodes.FullQuestInfo:
+                    printEventInfo(parameters, evCode);
+                    break;
                 default:
                     printEventInfo(parameters, evCode);
                     break;
@@ -286,7 +290,7 @@ namespace AOSnifferNET
                         onJoinResponse(parameters);
                         break;
                     case OperationCodes.Move:
-                        printOperationInfo(parameters, opCode, "OnResponse");
+                        //printOperationInfo(parameters, opCode, "OnResponse");
                         break;
                     case OperationCodes.AuctionGetOffers:
                         onAuctionGetOffers_Res(parameters);

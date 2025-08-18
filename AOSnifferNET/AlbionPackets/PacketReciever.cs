@@ -3,6 +3,9 @@ using SharpPcap;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Threading;
 
 namespace AOSnifferNET
@@ -11,10 +14,13 @@ namespace AOSnifferNET
     {
         readonly PacketHandler photonParser;
         readonly Thread photonThread;
+        readonly string localIp;
 
         public PacketReciever()
         {
             this.photonParser = new PacketHandler();
+            this.localIp = GetLocalIPAddress();
+
             try
             {
                 this.photonThread = new Thread(() => this.CreateListener()) { };
@@ -24,6 +30,27 @@ namespace AOSnifferNET
             {
                 Console.WriteLine(ea.ToString());
             }
+        }
+
+        // Detecta la IP local de la VM
+        private string GetLocalIPAddress()
+        {
+            string localIP = "";
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    localIP = ip.ToString();
+                    break;
+                }
+            }
+
+            if (string.IsNullOrEmpty(localIP))
+                throw new Exception("No se pudo determinar la IP local.");
+
+            Console.WriteLine($"Local IP detected: {localIP}");
+            return localIP;
         }
 
         private void CreateListener()
@@ -43,10 +70,8 @@ namespace AOSnifferNET
                         throw new Exception("No interfaces found! Make sure NPcap is installed.");
                     }
 
-                    // Verificar todos los dispositivos en cada iteración del bucle
                     foreach (ILiveDevice deviceSelected in allDevices)
                     {
-                        // Verifica si el dispositivo ya está en la lista
                         if (!devicesOpened.Contains(deviceSelected))
                         {
                             Console.WriteLine($"Open... {deviceSelected.Description}");
@@ -56,7 +81,7 @@ namespace AOSnifferNET
                             devicesOpened.Add(deviceSelected);
                         }
                     }
-                    // Espera unos segundos antes de volver a buscar nuevos dispositivos
+
                     Thread.Sleep(1000);
                 }
                 catch (Exception e)
@@ -101,19 +126,36 @@ namespace AOSnifferNET
             {
                 var packet = Packet.ParsePacket(e.GetPacket().LinkLayerType, e.GetPacket().Data);
                 UdpPacket udp_packet = packet.Extract<UdpPacket>();
-                if (udp_packet != null && (udp_packet.SourcePort == 5056 || udp_packet.DestinationPort == 5056))
+
+                if (udp_packet != null)
                 {
-                    this.photonParser.ReceivePacket(udp_packet.PayloadData);
-                }
-                else
-                {
-                    if (udp_packet != null && (udp_packet.SourcePort == 5055 || udp_packet.DestinationPort == 5055))
+                    // Filtrar solo paquetes que tengan la IP local como source o dest
+                    if (packet.PayloadPacket is IPv4Packet ip_packet)
                     {
-                        if (packet.PayloadPacket is IPv4Packet ip_packet && (ip_packet.SourceAddress.ToString() == "5.188.125.60" || ip_packet.SourceAddress.ToString() == "5.45.187.118"))
+                        if (ip_packet.SourceAddress.ToString() != this.localIp &&
+                            ip_packet.DestinationAddress.ToString() != this.localIp)
                         {
-                            var output = new StreamWriter(Console.OpenStandardOutput());
-                            output.WriteLine("[onLogin][{status:\"New Packet\"}]");
-                            output.Flush();
+                            return; // Ignorar paquete que no involucra la IP local
+                        }
+                    }
+
+                    // Puerto 5056
+                    if (udp_packet.SourcePort == 5056 || udp_packet.DestinationPort == 5056)
+                    {
+                        this.photonParser.ReceivePacket(udp_packet.PayloadData);
+                    }
+                    // Puerto 5055
+                    else if (udp_packet.SourcePort == 5055 || udp_packet.DestinationPort == 5055)
+                    {
+                        if (packet.PayloadPacket is IPv4Packet ip_pkt)
+                        {
+                            if (ip_pkt.SourceAddress.ToString() == "5.188.125.60" ||
+                                ip_pkt.SourceAddress.ToString() == "5.45.187.118")
+                            {
+                                var output = new StreamWriter(Console.OpenStandardOutput());
+                                output.WriteLine("[onLogin][{status:\"New Packet\"}]");
+                                output.Flush();
+                            }
                         }
                     }
                 }

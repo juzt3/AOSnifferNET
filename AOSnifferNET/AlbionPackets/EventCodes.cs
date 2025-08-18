@@ -638,5 +638,6 @@
         NewHellDungeonRoomShrineObject = 634,
         HellDungeonRoomShrineStateUpdate = 635,
         SimpleBehaviourBuildingStateUpdate = 636,
+        KeyValidation = 637,
     }
 }
