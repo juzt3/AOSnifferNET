@@ -3,7 +3,6 @@ using SharpPcap;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -72,13 +71,19 @@ namespace AOSnifferNET
 
                     foreach (ILiveDevice deviceSelected in allDevices)
                     {
-                        if (!devicesOpened.Contains(deviceSelected))
+                        if (!string.IsNullOrEmpty(deviceSelected.Description) &&
+                            deviceSelected.Description.IndexOf("Pseudo-device", StringComparison.OrdinalIgnoreCase) >= 0)
                         {
+                            if (devicesOpened.Contains(deviceSelected))
+                            {
+                                break;
+                            }
                             Console.WriteLine($"Open... {deviceSelected.Description}");
                             deviceSelected.OnPacketArrival += this.PacketHandler;
                             deviceSelected.Open(DeviceModes.Promiscuous, 1);
                             deviceSelected.StartCapture();
                             devicesOpened.Add(deviceSelected);
+                            break;
                         }
                     }
 
