@@ -39,6 +39,10 @@ namespace AOSnifferNET
             
             switch (evCode)
             {
+                case EventCodes.NewCagedObject:
+                case EventCodes.CagedObjectStateUpdated:
+                    printEventInfo(parameters, evCode);
+                    break;
                 case EventCodes.Move:
                     onEntityMovementEvent(parameters);
                     break;
@@ -199,7 +203,7 @@ namespace AOSnifferNET
                     printEventInfo(parameters, evCode);
                     break;
                 default:
-                    printEventInfo(parameters, evCode);
+                    //printEventInfo(parameters, evCode);
                     break;
                 }
             }
@@ -269,7 +273,7 @@ namespace AOSnifferNET
                         printOperationInfo(parameters, opCode, "onRequest");
                         break;
                     default:
-                        printOperationInfo(parameters, opCode, "onRequest");
+                        //printOperationInfo(parameters, opCode, "onRequest");
                         break;
                 }
 
@@ -321,7 +325,7 @@ namespace AOSnifferNET
                         printOperationInfo(parameters, opCode, "onResponse");
                         break;
                     default:
-                        printOperationInfo(parameters, opCode, "onResponse");
+                        //printOperationInfo(parameters, opCode, "onResponse");
                         break;
                 }
 
