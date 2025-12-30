@@ -3,9 +3,11 @@ using SharpPcap;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Runtime.InteropServices;
 
 namespace AOSnifferNET
 {
@@ -57,6 +59,21 @@ namespace AOSnifferNET
             List<ILiveDevice> devicesOpened = new List<ILiveDevice>();
             Console.WriteLine("Start Listening for Devices...");
 
+            bool isLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+            string[] virtualKeywords =
+            {
+                "loopback",
+                "npcap",
+                "virtual",
+                "vmware",
+                "hyper-v",
+                "vbox",
+                "tap",
+                "wan miniport",
+                "wsl",
+                "pseudo"
+            };
+
             bool running = true;
             while (running)
             {
@@ -71,20 +88,34 @@ namespace AOSnifferNET
 
                     foreach (ILiveDevice deviceSelected in allDevices)
                     {
-                        if (!string.IsNullOrEmpty(deviceSelected.Description) &&
-                            deviceSelected.Description.IndexOf("Pseudo-device", StringComparison.OrdinalIgnoreCase) >= 0)
+                        if (string.IsNullOrEmpty(deviceSelected.Description))
+                            continue;
+
+                        string desc = deviceSelected.Description.ToLowerInvariant();
+
+                        // Excluir adaptadores virtuales
+                        if (!isLinux)
                         {
-                            if (devicesOpened.Contains(deviceSelected))
-                            {
-                                break;
-                            }
-                            Console.WriteLine($"Open... {deviceSelected.Description}");
-                            deviceSelected.OnPacketArrival += this.PacketHandler;
-                            deviceSelected.Open(DeviceModes.Promiscuous, 1);
-                            deviceSelected.StartCapture();
-                            devicesOpened.Add(deviceSelected);
-                            break;
+                            bool isVirtual = virtualKeywords.Any(k => desc.Contains(k));
+                            if (isVirtual)
+                                continue;
                         }
+                        else
+                        {
+                            if (!desc.Contains("Pseudo-device"))
+                                continue;
+                        }
+
+
+                        if (devicesOpened.Contains(deviceSelected))
+                            continue;
+
+                        Console.WriteLine($"Open physical device: {deviceSelected.Description}");
+
+                        deviceSelected.OnPacketArrival += PacketHandler;
+                        deviceSelected.Open(DeviceModes.Promiscuous, 1);
+                        deviceSelected.StartCapture();
+                        devicesOpened.Add(deviceSelected);
                     }
 
                     Thread.Sleep(1000);
