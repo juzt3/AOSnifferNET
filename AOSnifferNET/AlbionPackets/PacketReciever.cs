@@ -7,7 +7,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using System.Runtime.InteropServices;
 
 namespace AOSnifferNET
 {
@@ -59,12 +58,11 @@ namespace AOSnifferNET
             List<ILiveDevice> devicesOpened = new List<ILiveDevice>();
             Console.WriteLine("Start Listening for Devices...");
 
-            bool isLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+            bool isLinux = File.Exists("/proc/sys/kernel/ostype");
             string[] virtualKeywords =
             {
                 "loopback",
                 "npcap",
-                "virtual",
                 "vmware",
                 "hyper-v",
                 "vbox",
@@ -92,7 +90,6 @@ namespace AOSnifferNET
                             continue;
 
                         string desc = deviceSelected.Description.ToLowerInvariant();
-
                         // Excluir adaptadores virtuales
                         if (!isLinux)
                         {
@@ -102,7 +99,7 @@ namespace AOSnifferNET
                         }
                         else
                         {
-                            if (!desc.Contains("Pseudo-device"))
+                            if (!desc.Contains("pseudo-device"))
                                 continue;
                         }
 
@@ -168,6 +165,7 @@ namespace AOSnifferNET
                     // Filtrar solo paquetes que tengan la IP local como source o dest
                     if (packet.PayloadPacket is IPv4Packet ip_packet)
                     {
+                        // Console.WriteLine(ip_packet.SourceAddress.ToString());
                         if (ip_packet.SourceAddress.ToString() != this.localIp &&
                             ip_packet.DestinationAddress.ToString() != this.localIp)
                         {

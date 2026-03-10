@@ -17,7 +17,8 @@ namespace AOSnifferNET
         {
             this.id = id;
             this.pos = pos;
-
+            this.type = type;
+            /*
             if (type.Contains("_CORRUPT"))
                 this.type = "CORRUPT";
             else if (type.Contains("_SOLO"))
@@ -26,6 +27,7 @@ namespace AOSnifferNET
                 this.type = "ELITE";
             else
                 this.type = "GROUP";
+            */
         }
     }
 }

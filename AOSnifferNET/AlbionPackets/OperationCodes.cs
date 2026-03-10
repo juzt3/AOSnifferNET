@@ -535,5 +535,6 @@ namespace AOSnifferNET
         EvaluatePlatformPerks = 530,
         LinkAccountToXbox = 531,
         TravelFactionWarfarePortal = 532,
+        RequestRedZoneEventStandings = 533,
     }
 }

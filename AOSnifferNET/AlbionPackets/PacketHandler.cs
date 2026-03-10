@@ -39,6 +39,7 @@ namespace AOSnifferNET
             
             switch (evCode)
             {
+                case EventCodes.MistsPlayerJoinedInfo:
                 case EventCodes.NewCagedObject:
                 case EventCodes.CagedObjectStateUpdated:
                     printEventInfo(parameters, evCode);
@@ -203,7 +204,7 @@ namespace AOSnifferNET
                     printEventInfo(parameters, evCode);
                     break;
                 default:
-                    //printEventInfo(parameters, evCode);
+                    printEventInfo(parameters, evCode);
                     break;
                 }
             }
