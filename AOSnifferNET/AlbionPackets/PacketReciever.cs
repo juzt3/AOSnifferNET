@@ -15,6 +15,7 @@ namespace AOSnifferNET
         readonly PacketHandler photonParser;
         readonly Thread photonThread;
         readonly string localIp;
+        bool serverDetected = false;
 
         public PacketReciever()
         {
@@ -162,14 +163,36 @@ namespace AOSnifferNET
 
                 if (udp_packet != null)
                 {
-                    // Filtrar solo paquetes que tengan la IP local como source o dest
                     if (packet.PayloadPacket is IPv4Packet ip_packet)
                     {
-                        // Console.WriteLine(ip_packet.SourceAddress.ToString());
                         if (ip_packet.SourceAddress.ToString() != this.localIp &&
                             ip_packet.DestinationAddress.ToString() != this.localIp)
                         {
-                            return; // Ignorar paquete que no involucra la IP local
+                            return;
+                        }
+
+                        // Detectar región del servidor una sola vez
+                        if (!serverDetected)
+                        {
+                            string gameServerIP = ip_packet.SourceAddress.ToString() == this.localIp
+                                ? ip_packet.DestinationAddress.ToString()
+                                : ip_packet.SourceAddress.ToString();
+
+                            if (gameServerIP.StartsWith("5.188.125."))
+                            {
+                                Console.WriteLine("[ServerRegion] America");
+                                serverDetected = true;
+                            }
+                            else if (gameServerIP.StartsWith("5.45.187."))
+                            {
+                                Console.WriteLine("[ServerRegion] Asia");
+                                serverDetected = true;
+                            }
+                            else if (gameServerIP.StartsWith("193.169.238."))
+                            {
+                                Console.WriteLine("[ServerRegion] Europe");
+                                serverDetected = true;
+                            }
                         }
                     }
 
