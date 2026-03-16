@@ -180,17 +180,17 @@ namespace AOSnifferNET
 
                             if (gameServerIP.StartsWith("5.188.125."))
                             {
-                                Console.WriteLine("[ServerRegion] America");
+                                Console.WriteLine("[ServerRegion][{\"server\":\"America\"}]");
                                 serverDetected = true;
                             }
                             else if (gameServerIP.StartsWith("5.45.187."))
                             {
-                                Console.WriteLine("[ServerRegion] Asia");
+                                Console.WriteLine("[ServerRegion][{\"server\":\"Asia\"}]");
                                 serverDetected = true;
                             }
                             else if (gameServerIP.StartsWith("193.169.238."))
                             {
-                                Console.WriteLine("[ServerRegion] Europe");
+                                Console.WriteLine("[ServerRegion][{\"server\":\"Europe\"}]");
                                 serverDetected = true;
                             }
                         }
@@ -210,7 +210,7 @@ namespace AOSnifferNET
                                 ip_pkt.SourceAddress.ToString() == "5.45.187.118")
                             {
                                 var output = new StreamWriter(Console.OpenStandardOutput());
-                                output.WriteLine("[onLogin][{status:\"New Packet\"}]");
+                                output.WriteLine("[onLogin][{\"status\":\"New Packet\"}]");
                                 output.Flush();
                             }
                         }
