@@ -91,6 +91,7 @@ namespace AOSnifferNET
                     break;
                 case EventCodes.NewCharacter: // Encrypted position
                     onNewCharacter(parameters);
+                    //printEventInfo(parameters, evCode);
                     break;
                 case EventCodes.Leave:
                     onLeaveEvent(parameters);
@@ -244,13 +245,11 @@ namespace AOSnifferNET
                         onUnRegisterFromObject(parameters);
                         break;
                     case OperationCodes.AttackStart:
+                    case OperationCodes.MountCancel:
                         printOperationInfo(parameters, opCode, "onRequest");
                         break;
                     case OperationCodes.Mount:
                         onMount(parameters);
-                        break;
-                    case OperationCodes.MountCancel:
-                        printOperationInfo(parameters, opCode, "onRequest");
                         break;
                     case OperationCodes.HarvestStart:
                         onReqHarvestStart(parameters);
@@ -273,10 +272,15 @@ namespace AOSnifferNET
                     case OperationCodes.CastStart:
                         printOperationInfo(parameters, opCode, "onRequest");
                         break;
-                    default:
-                        //printOperationInfo(parameters, opCode, "onRequest");
+                    case OperationCodes.FishingCast:
+                    case OperationCodes.FishingCasting:
+                    case OperationCodes.FishingStart:
+                        printOperationInfo(parameters, opCode, "onRequest");
                         break;
-                }
+                    default:
+                            //printOperationInfo(parameters, opCode, "onRequest");
+                            break;
+                    }
 
             }
 
@@ -888,11 +892,10 @@ namespace AOSnifferNET
                     }
                 }
 
-                /*
                 index = 0;
-                if (parameters[41].GetType() == typeof(Byte[]))
+                if (parameters[43].GetType() == typeof(Byte[]))
                 {
-                    Byte[] skillList = (Byte[])parameters[41];
+                    Byte[] skillList = (Byte[])parameters[43];
                     foreach (Byte b in skillList)
                     {
                         if (index >= 6)
@@ -904,7 +907,7 @@ namespace AOSnifferNET
                 }
                 else
                 {
-                    Int16[] skillList = (Int16[])parameters[41];
+                    Int16[] skillList = (Int16[])parameters[43];
                     foreach (Int16 b in skillList)
                     {
                         if (index >= 6)
@@ -914,7 +917,6 @@ namespace AOSnifferNET
                         index++;
                     }
                 }
-                */
 
                     var newChar = new evNewCharacter(id, nick, guild, alliance, pos, items, skills, faction, currentHealth, maxHealth);
             printEventInfo(newChar, EventCodes.NewCharacter);
