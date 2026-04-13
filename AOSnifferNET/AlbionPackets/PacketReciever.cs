@@ -195,7 +195,6 @@ namespace AOSnifferNET
                             }
                         }
                     }
-
                     // Puerto 5056
                     if (udp_packet.SourcePort == 5056 || udp_packet.DestinationPort == 5056)
                     {

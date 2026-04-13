@@ -10,9 +10,12 @@ using System.Linq;
 
 namespace AOSnifferNET
 {
-    class PacketHandler : PhotonParser
+    class PacketHandler : PhotonParser18
     {
-        public PacketHandler() { }
+        public PacketHandler() {
+            UseProtocol18 = true;
+            Debug = false;
+        }
 
         protected override void OnEvent(byte code, Dictionary<byte, object> parameters)
         {
@@ -210,715 +213,717 @@ namespace AOSnifferNET
                 }
             }
 
-            protected override void OnRequest(byte operationCode, Dictionary<byte, object> parameters)
+        protected override void OnRequest(byte operationCode, Dictionary<byte, object> parameters)
+        {
+            parameters.TryGetValue((byte)253, out object val);
+            if (val == null) return;
+
+            if (!int.TryParse(val.ToString(), out int iCode)) return;
+
+            OperationCodes opCode = 0;
+            try
             {
-                parameters.TryGetValue((byte)253, out object val);
-                if (val == null) return;
-
-                if (!int.TryParse(val.ToString(), out int iCode)) return;
-
-                OperationCodes opCode = 0;
-                try
-                {
-                    opCode = (OperationCodes)iCode;
-                }
-                catch (System.Collections.Generic.KeyNotFoundException)
-                {
-                    debugPacket(parameters, iCode);
-                }
-
-                switch (opCode)
-                {
-                    case OperationCodes.Move:
-                        onMoveOperation(parameters);
-                        break;
-                    case OperationCodes.AuctionGetOffers:
-                        //onAuctionGetOffers_Req(parameters);
-                        break;
-                    case OperationCodes.AuctionGetRequests:
-                        //onAuctionGetRequests_Req(parameters);
-                        break;
-                    case OperationCodes.RegisterToObject:
-                        onRegisterToObject(parameters);
-                        break;
-                    case OperationCodes.UnRegisterFromObject:
-                        onUnRegisterFromObject(parameters);
-                        break;
-                    case OperationCodes.AttackStart:
-                    case OperationCodes.MountCancel:
-                        printOperationInfo(parameters, opCode, "onRequest");
-                        break;
-                    case OperationCodes.Mount:
-                        onMount(parameters);
-                        break;
-                    case OperationCodes.HarvestStart:
-                        onReqHarvestStart(parameters);
-                        break;
-                    case OperationCodes.HarvestCancel:
-                        // No llega al minar un cuerpo
-                        printOperationInfo(parameters, opCode, "onRequest");
-                        break;
-                    case OperationCodes.ChangeCluster:
-                        printOperationInfo(parameters, opCode, "onRequest");
-                        break;
-                    case OperationCodes.GetGameServerByCluster:
-                        // Cuando le pide al servidor la direccion dns del cluster
-                        // GetGameServerByCluster: {"0":"0000","255":10,"253":16}
-                        printOperationInfo(parameters, opCode, "onRequest");
-                        break;
-                    case OperationCodes.GetReferralLink:
-                        printOperationInfo(parameters, opCode, "onRequest");
-                        break;
-                    case OperationCodes.CastStart:
-                        printOperationInfo(parameters, opCode, "onRequest");
-                        break;
-                    case OperationCodes.FishingCast:
-                    case OperationCodes.FishingCasting:
-                    case OperationCodes.FishingStart:
-                        printOperationInfo(parameters, opCode, "onRequest");
-                        break;
-                    default:
-                            //printOperationInfo(parameters, opCode, "onRequest");
-                            break;
-                    }
-
+                opCode = (OperationCodes)iCode;
+            }
+            catch (System.Collections.Generic.KeyNotFoundException)
+            {
+                debugPacket(parameters, iCode);
             }
 
-            protected override void OnResponse(byte operationCode, short returnCode, string debugMessage, Dictionary<byte, object> parameters)
+            switch (opCode)
             {
-                parameters.TryGetValue((byte)253, out object val);
-                if (val == null) return;
-
-                if (!int.TryParse(val.ToString(), out int iCode)) return;
-
-                OperationCodes opCode = (OperationCodes)iCode;
-
-                switch (opCode)
-                {
-                    case OperationCodes.Join:
-                        onJoinResponse(parameters);
-                        break;
-                    case OperationCodes.Move:
-                        //printOperationInfo(parameters, opCode, "OnResponse");
-                        break;
-                    case OperationCodes.AuctionGetOffers:
-                        onAuctionGetOffers_Res(parameters);
-                        break;
-                    case OperationCodes.AuctionGetRequests:
-                        onAuctionGetRequests_Res(parameters);
-                        break;
-                    case OperationCodes.AuctionGetItemAverageValue:
-                        onAuctionGetItemAverageValue(parameters);
-                        break;
-                    case OperationCodes.AuctionGetItemAverageStats:
-                        printOperationInfo(parameters, opCode, "OnResponse");
-                        break;
-                    case OperationCodes.AuctionBuyOffer:
-                        printOperationInfo(parameters, opCode, "OnResponse");
-                        break;
-                    case OperationCodes.HarvestStart:
-                        //printOperationInfo(parameters, opCode, "onResponse");
-                        break;
-                    case OperationCodes.HarvestCancel:
-                        printOperationInfo(parameters, opCode, "onResponse");
-                        break;
-                    case OperationCodes.ChangeCluster:
-                        printOperationInfo(parameters, opCode, "onResponse");
-                        break;
-                    case OperationCodes.GetGameServerByCluster:
-                        // GetGameServerByCluster: {"0":"live01-win-28.dc02.albion.zone:5056","255":10,"253":16}
-                        printOperationInfo(parameters, opCode, "onResponse");
-                        break;
-                    default:
-                        //printOperationInfo(parameters, opCode, "onResponse");
+                case OperationCodes.Move:
+                    onMoveOperation(parameters);
+                    break;
+                case OperationCodes.AuctionGetOffers:
+                    //onAuctionGetOffers_Req(parameters);
+                    break;
+                case OperationCodes.AuctionGetRequests:
+                    //onAuctionGetRequests_Req(parameters);
+                    break;
+                case OperationCodes.RegisterToObject:
+                    onRegisterToObject(parameters);
+                    break;
+                case OperationCodes.UnRegisterFromObject:
+                    onUnRegisterFromObject(parameters);
+                    break;
+                case OperationCodes.AttackStart:
+                case OperationCodes.MountCancel:
+                    printOperationInfo(parameters, opCode, "onRequest");
+                    break;
+                case OperationCodes.Mount:
+                    onMount(parameters);
+                    break;
+                case OperationCodes.HarvestStart:
+                    onReqHarvestStart(parameters);
+                    break;
+                case OperationCodes.HarvestCancel:
+                    // No llega al minar un cuerpo
+                    printOperationInfo(parameters, opCode, "onRequest");
+                    break;
+                case OperationCodes.ChangeCluster:
+                    printOperationInfo(parameters, opCode, "onRequest");
+                    break;
+                case OperationCodes.GetGameServerByCluster:
+                    // Cuando le pide al servidor la direccion dns del cluster
+                    // GetGameServerByCluster: {"0":"0000","255":10,"253":16}
+                    printOperationInfo(parameters, opCode, "onRequest");
+                    break;
+                case OperationCodes.GetReferralLink:
+                    printOperationInfo(parameters, opCode, "onRequest");
+                    break;
+                case OperationCodes.CastStart:
+                    printOperationInfo(parameters, opCode, "onRequest");
+                    break;
+                case OperationCodes.FishingCast:
+                case OperationCodes.FishingCasting:
+                case OperationCodes.FishingStart:
+                    printOperationInfo(parameters, opCode, "onRequest");
+                    break;
+                default:
+                        //printOperationInfo(parameters, opCode, "onRequest");
                         break;
                 }
 
-            }
-            private void debugEventInfo(Dictionary<byte, object> parameters, EventCodes evCode)
+        }
+
+        protected override void OnResponse(byte operationCode, short returnCode, string debugMessage, Dictionary<byte, object> parameters)
+        {
+            parameters.TryGetValue((byte)253, out object val);
+            if (val == null) return;
+
+            if (!int.TryParse(val.ToString(), out int iCode)) return;
+
+            OperationCodes opCode = (OperationCodes)iCode;
+
+            switch (opCode)
             {
-                string jsonPacket;
-                jsonPacket = JsonConvert.SerializeObject(parameters.ToArray());
-
-                Console.WriteLine("[OnEvent]{1}: {2}", evCode, jsonPacket);
-            }
-            private void debugOperationInfo(Dictionary<byte, object> parameters, OperationCodes opCode, String typeInfo)
-            {
-                string jsonPacket;
-                jsonPacket = JsonConvert.SerializeObject(parameters.ToArray());
-
-                Console.WriteLine("[{0}]{1}: {2}", typeInfo, opCode, jsonPacket);
-            }
-
-            private void printEventInfo(Object obj, EventCodes evCode)
-            {
-                string jsonPacket;
-                jsonPacket = JsonConvert.SerializeObject(obj);
-                string outLine = "[onEvent][" + (int)evCode + "] " + evCode + ": " + jsonPacket;
-                var output = new StreamWriter(Console.OpenStandardOutput());
-                output.WriteLine(outLine);
-                output.Flush();
-                //Console.WriteLine(outLine);
-                //Console.Out.Flush();
-            }
-            private void printOperationInfo(Object obj, OperationCodes opCode, String typeInfo)
-            {
-                string jsonPacket;
-                jsonPacket = JsonConvert.SerializeObject(obj);
-                string outLine = "[" + typeInfo + "][" + (int)opCode + "] " + opCode + ": " + jsonPacket;
-                var output = new StreamWriter(Console.OpenStandardOutput());
-                output.WriteLine(outLine);
-                output.Flush();
-                //Console.WriteLine(outLine);
-                //Console.Out.Flush();
-            }
-
-            private void debugPacket(Object obj, int iCode)
-            {
-                string jsonPacket;
-                jsonPacket = JsonConvert.SerializeObject(obj);
-                string outLine = iCode + ": " + jsonPacket;
-                Console.WriteLine(outLine);
-                Console.Out.Flush();
+                case OperationCodes.Join:
+                    onJoinResponse(parameters);
+                    break;
+                case OperationCodes.Move:
+                    //printOperationInfo(parameters, opCode, "OnResponse");
+                    break;
+                case OperationCodes.AuctionGetOffers:
+                    onAuctionGetOffers_Res(parameters);
+                    break;
+                case OperationCodes.AuctionGetRequests:
+                    onAuctionGetRequests_Res(parameters);
+                    break;
+                case OperationCodes.AuctionGetItemAverageValue:
+                    onAuctionGetItemAverageValue(parameters);
+                    break;
+                case OperationCodes.AuctionGetItemAverageStats:
+                    printOperationInfo(parameters, opCode, "OnResponse");
+                    break;
+                case OperationCodes.AuctionBuyOffer:
+                    printOperationInfo(parameters, opCode, "OnResponse");
+                    break;
+                case OperationCodes.HarvestStart:
+                    //printOperationInfo(parameters, opCode, "onResponse");
+                    break;
+                case OperationCodes.HarvestCancel:
+                    printOperationInfo(parameters, opCode, "onResponse");
+                    break;
+                case OperationCodes.ChangeCluster:
+                    printOperationInfo(parameters, opCode, "onResponse");
+                    break;
+                case OperationCodes.GetGameServerByCluster:
+                    // GetGameServerByCluster: {"0":"live01-win-28.dc02.albion.zone:5056","255":10,"253":16}
+                    printOperationInfo(parameters, opCode, "onResponse");
+                    break;
+                default:
+                    //printOperationInfo(parameters, opCode, "onResponse");
+                    break;
             }
 
-            #region OnEvent
-            private void onNewBuilding(Dictionary<byte, object> parameters)
+        }
+        
+        private void debugEventInfo(Dictionary<byte, object> parameters, EventCodes evCode)
+        {
+            string jsonPacket;
+            jsonPacket = JsonConvert.SerializeObject(parameters.ToArray());
+
+            Console.WriteLine("[OnEvent]{1}: {2}", evCode, jsonPacket);
+        }
+        
+        private void debugOperationInfo(Dictionary<byte, object> parameters, OperationCodes opCode, String typeInfo)
+        {
+            string jsonPacket;
+            jsonPacket = JsonConvert.SerializeObject(parameters.ToArray());
+
+            Console.WriteLine("[{0}]{1}: {2}", typeInfo, opCode, jsonPacket);
+        }
+
+        private void printEventInfo(Object obj, EventCodes evCode)
+        {
+            string jsonPacket;
+            jsonPacket = JsonConvert.SerializeObject(obj);
+            string outLine = "[onEvent][" + (int)evCode + "] " + evCode + ": " + jsonPacket;
+            var output = new StreamWriter(Console.OpenStandardOutput());
+            output.WriteLine(outLine);
+            output.Flush();
+            //Console.WriteLine(outLine);
+            //Console.Out.Flush();
+        }
+        private void printOperationInfo(Object obj, OperationCodes opCode, String typeInfo)
+        {
+            string jsonPacket;
+            jsonPacket = JsonConvert.SerializeObject(obj);
+            string outLine = "[" + typeInfo + "][" + (int)opCode + "] " + opCode + ": " + jsonPacket;
+            var output = new StreamWriter(Console.OpenStandardOutput());
+            output.WriteLine(outLine);
+            output.Flush();
+            //Console.WriteLine(outLine);
+            //Console.Out.Flush();
+        }
+
+        private void debugPacket(Object obj, int iCode)
+        {
+            string jsonPacket;
+            jsonPacket = JsonConvert.SerializeObject(obj);
+            string outLine = iCode + ": " + jsonPacket;
+            Console.WriteLine(outLine);
+            Console.Out.Flush();
+        }
+
+        #region OnEvent
+        private void onNewBuilding(Dictionary<byte, object> parameters)
+        {
+            int packetID = int.Parse(parameters[0].ToString());
+            string name = parameters[3].ToString();
+            Single[] pos = (Single[])parameters[4];
+
+            var nb = new evNewBuilding(packetID, name, pos);
+            printEventInfo(nb, EventCodes.NewBuilding);
+
+        }
+        private void onCharacterEquipmentChanged(Dictionary<byte, object> parameters)
+        {
+            short[] items = new short[10];
+            short[] skills = new short[6];
+
+            int index = 0;
+            if (parameters[2].GetType() == typeof(Byte[]))
             {
-                int packetID = int.Parse(parameters[0].ToString());
-                string name = parameters[3].ToString();
-                Single[] pos = (Single[])parameters[4];
-
-                var nb = new evNewBuilding(packetID, name, pos);
-                printEventInfo(nb, EventCodes.NewBuilding);
-
-            }
-            private void onCharacterEquipmentChanged(Dictionary<byte, object> parameters)
-            {
-                short[] items = new short[10];
-                short[] skills = new short[6];
-
-                int index = 0;
-                if (parameters[2].GetType() == typeof(Byte[]))
+                Byte[] itemList = (Byte[])parameters[2];
+                foreach (Byte b in itemList)
                 {
-                    Byte[] itemList = (Byte[])parameters[2];
-                    foreach (Byte b in itemList)
-                    {
-                        if (index >= 10)
-                            break;
-
-                        items[index] = Convert.ToInt16(b);
-                        index++;
-                    }
-                }
-                else
-                {
-                    Int16[] itemList = (Int16[])parameters[2];
-                    foreach (Int16 b in itemList)
-                    {
-                        if (index >= 10)
-                            break;
-
-                        items[index] = b;
-                        index++;
-                    }
-                }
-
-                index = 0;
-                if (parameters[5].GetType() == typeof(Byte[]))
-                {
-                    Byte[] skillList = (Byte[])parameters[5];
-                    foreach (Byte b in skillList)
-                    {
-                        if (index >= 6)
-                            break;
-
-                        skills[index] = Convert.ToInt16(b);
-                        index++;
-                    }
-                }
-                else
-                {
-                    Int16[] skillList = (Int16[])parameters[5];
-                    foreach (Int16 b in skillList)
-                    {
-                        if (index >= 6)
-                            break;
-
-                        skills[index] = b;
-                        index++;
-                    }
-                }
-
-                var eqc = new evCharacterEquipmentChanged(items, skills);
-                printEventInfo(eqc, EventCodes.CharacterEquipmentChanged);
-            }
-            private void onNewExit(Dictionary<byte, object> parameters)
-            {
-                Single[] entryPos = new Single[2];
-                if (parameters.ContainsKey(2))
-                {
-                    entryPos = (Single[])parameters[2];
-                    var ne = new evNewExit(entryPos);
-                    printEventInfo(ne, EventCodes.NewExit);
-                }
-            }
-            private void onMobChangeState(Dictionary<byte, object> parameters)
-            {
-                int mobID = int.Parse(parameters[0].ToString());
-                short enchantment = short.Parse(parameters[1].ToString());
-
-                var cs = new evMobChangeState(mobID, enchantment);
-                printEventInfo(cs, EventCodes.MobChangeState);
-            }
-            private void onInventoryPutItem(Dictionary<byte, object> parameters)
-            {
-                int itemID = int.Parse(parameters[0].ToString());
-                var putItem = new evInventoryPutItem(itemID);
-                printEventInfo(putItem, EventCodes.InventoryPutItem);
-            }
-            private void onNewFishingZoneObject(Dictionary<byte, object> parameters)
-            {
-                //NewFishingZoneObject: { "0":1182,"1":[253.4,52.8],"2":3,"3":2,"4":"FishingNodeSwarm","252":341} 0: objectID 1: zone pos 2:charges (not present when empty) 3:times fished from 4:zone tipe
-                int objectID = int.Parse(parameters[0].ToString());
-                Single[] zonePos = (Single[])parameters[1];
-                short charges = 0;
-                if (parameters.ContainsKey(2))
-                    charges = short.Parse(parameters[2].ToString());
-                short fished = 0;
-                if (parameters.ContainsKey(3))
-                    fished = short.Parse(parameters[3].ToString());
-                string zoneType = parameters[4].ToString();
-
-                var fishingZone = new evNewFishingZoneObject(objectID, zonePos, charges, fished, zoneType);
-                printEventInfo(fishingZone, EventCodes.NewFishingZoneObject);
-
-            }
-            private void onNewFloatObject(Dictionary<byte, object> parameters)
-            {
-                // NewFloatObject: { "0":665769,"1":[-190.193344,59.3336449],"2":298.5448,"3":632262,"4":1,"252":340} 0: bobber ID 1: bobber pos 2:angle
-                // 3:player ID 4:fishing state (1: bobber landed 2:fish bitten 3:playing minigam 4:catched a fish 5:failed)
-                int bobberID = int.Parse(parameters[0].ToString());
-                Single[] bobberPos = (Single[])parameters[1];
-                float angleFromPlayer = float.Parse(parameters[2].ToString());
-                int playerId = int.Parse(parameters[3].ToString());
-                short fishingState = short.Parse(parameters[4].ToString());
-
-                string readableState;
-                switch (fishingState)
-                {
-                    case 1:
-                        readableState = "Floating";
+                    if (index >= 10)
                         break;
-                    case 2:
-                        readableState = "Bitten";
-                        break;
-                    case 3:
-                        readableState = "Minigame";
-                        break;
-                    case 4:
-                        readableState = "Catched";
-                        break;
-                    case 5:
-                        readableState = "Lost";
-                        break;
-                    default:
-                        readableState = "";
-                        break;
+
+                    items[index] = Convert.ToInt16(b);
+                    index++;
                 }
-
-                var bobber = new evNewFloatObject(bobberID, bobberPos, angleFromPlayer, playerId, readableState);
-                printEventInfo(bobber, EventCodes.NewFloatObject);
             }
-            private void onHarvestStart(Dictionary<byte, object> parameters)
+            else
             {
-                //HarvestStart: { "0":144653,"1":638045717068106818,"2":638045717068106818,"3":1263,"5":2.0,"6":-1,"7":-1,"252":54} 5: tiempo para terminar de harvestear
-                int harvestableId = int.Parse(parameters[3].ToString());
-                float time = float.Parse(parameters[5].ToString());
-
-                var hs = new evHarvestStart(harvestableId, time);
-                printEventInfo(hs, EventCodes.HarvestStart);
-            }
-
-            private void onKeySync(Dictionary<byte, object> parameters)
-            {
-                byte[] xorCode = (byte[])parameters[0];
-                var pkt = new evKeySync(BitConverter.ToString(xorCode).Replace("-", string.Empty));
-                printEventInfo(pkt, EventCodes.KeySync);
-            }
-
-            private void onNewGeneralItem(Dictionary<byte, object> parameters, EventCodes evCode)
-            {
-                int objectID = int.Parse(parameters[0].ToString());
-                int itemID = int.Parse(parameters[1].ToString());
-                short amount = short.Parse(parameters[2].ToString());
-                long avgValue = 0;
-
-                if (parameters.ContainsKey(4))
+                Int16[] itemList = (Int16[])parameters[2];
+                foreach (Int16 b in itemList)
                 {
-                    avgValue = long.Parse(parameters[4].ToString());
-                    avgValue = (long)avgValue / 10000;
+                    if (index >= 10)
+                        break;
+
+                    items[index] = b;
+                    index++;
                 }
-
-                var newItem = new evNewSimpleItem(objectID, itemID, amount, avgValue);
-                printEventInfo(newItem, evCode);
-
             }
-            private void onAttachItemContainer(Dictionary<byte, object> parameters)
-            {
-                int objectID = int.Parse(parameters[0].ToString());
-                byte[] ownerMarkID = (byte[])parameters[1];
-                int[] itemsID = (int[])parameters[3];
-                // Estos itemsID son los objectID de eventos como
-                // NewEquipmentItem: {"0":203114,"1":2984,"2":1,"4":6204632,"5":"Bettooo","6":2,"7":48000000,"8":[-1],"9":[-1],"252":28}
-                // donde 0 es el objectID
 
-                var itemContainer = new evAttachItemContainer(objectID, ownerMarkID, itemsID);
-                printEventInfo(itemContainer, EventCodes.AttachItemContainer);
-            }
-            private void onNewLoot(Dictionary<byte, object> parameters)
+            index = 0;
+            if (parameters[5].GetType() == typeof(Byte[]))
             {
-                int lootId = int.Parse(parameters[0].ToString());
-                Single[] pos = (Single[])parameters[4];
-
-                var newloot = new evNewLoot(lootId, pos);
-                printEventInfo(newloot, EventCodes.NewLoot);
-            }
-            private void onHarvestFinished(Dictionary<byte, object> parameters)
-            {
-                //map[0:686375 1:637959518682696481 2:637959518687702927 3:2580 4:2 5:2 6:1 8:[] 9:[] 252:54]
-                int playerId = int.Parse(parameters[0].ToString());
-                int harvestableId = int.Parse(parameters[3].ToString());
-                short gathered = short.Parse(parameters[4].ToString());
-
-                short yield = 0;
-                if (parameters.ContainsKey(5))
+                Byte[] skillList = (Byte[])parameters[5];
+                foreach (Byte b in skillList)
                 {
-                    yield = short.Parse(parameters[5].ToString());
-                }
+                    if (index >= 6)
+                        break;
 
-                short premium = 0;
-                if (parameters.ContainsKey(6))
+                    skills[index] = Convert.ToInt16(b);
+                    index++;
+                }
+            }
+            else
+            {
+                Int16[] skillList = (Int16[])parameters[5];
+                foreach (Int16 b in skillList)
                 {
-                    premium = short.Parse(parameters[6].ToString());
-                }
+                    if (index >= 6)
+                        break;
 
-                short charges = 0;
-                if (parameters.ContainsKey(7))
+                    skills[index] = b;
+                    index++;
+                }
+            }
+
+            var eqc = new evCharacterEquipmentChanged(items, skills);
+            printEventInfo(eqc, EventCodes.CharacterEquipmentChanged);
+        }
+        private void onNewExit(Dictionary<byte, object> parameters)
+        {
+            Single[] entryPos = new Single[2];
+            if (parameters.ContainsKey(2))
+            {
+                entryPos = (Single[])parameters[2];
+                var ne = new evNewExit(entryPos);
+                printEventInfo(ne, EventCodes.NewExit);
+            }
+        }
+        private void onMobChangeState(Dictionary<byte, object> parameters)
+        {
+            int mobID = int.Parse(parameters[0].ToString());
+            short enchantment = short.Parse(parameters[1].ToString());
+
+            var cs = new evMobChangeState(mobID, enchantment);
+            printEventInfo(cs, EventCodes.MobChangeState);
+        }
+        private void onInventoryPutItem(Dictionary<byte, object> parameters)
+        {
+            int itemID = int.Parse(parameters[0].ToString());
+            var putItem = new evInventoryPutItem(itemID);
+            printEventInfo(putItem, EventCodes.InventoryPutItem);
+        }
+        private void onNewFishingZoneObject(Dictionary<byte, object> parameters)
+        {
+            //NewFishingZoneObject: { "0":1182,"1":[253.4,52.8],"2":3,"3":2,"4":"FishingNodeSwarm","252":341} 0: objectID 1: zone pos 2:charges (not present when empty) 3:times fished from 4:zone tipe
+            int objectID = int.Parse(parameters[0].ToString());
+            Single[] zonePos = (Single[])parameters[1];
+            short charges = 0;
+            if (parameters.ContainsKey(2))
+                charges = short.Parse(parameters[2].ToString());
+            short fished = 0;
+            if (parameters.ContainsKey(3))
+                fished = short.Parse(parameters[3].ToString());
+            string zoneType = parameters[4].ToString();
+
+            var fishingZone = new evNewFishingZoneObject(objectID, zonePos, charges, fished, zoneType);
+            printEventInfo(fishingZone, EventCodes.NewFishingZoneObject);
+
+        }
+        private void onNewFloatObject(Dictionary<byte, object> parameters)
+        {
+            // NewFloatObject: { "0":665769,"1":[-190.193344,59.3336449],"2":298.5448,"3":632262,"4":1,"252":340} 0: bobber ID 1: bobber pos 2:angle
+            // 3:player ID 4:fishing state (1: bobber landed 2:fish bitten 3:playing minigam 4:catched a fish 5:failed)
+            int bobberID = int.Parse(parameters[0].ToString());
+            Single[] bobberPos = (Single[])parameters[1];
+            float angleFromPlayer = float.Parse(parameters[2].ToString());
+            int playerId = int.Parse(parameters[3].ToString());
+            short fishingState = short.Parse(parameters[4].ToString());
+
+            string readableState;
+            switch (fishingState)
+            {
+                case 1:
+                    readableState = "Floating";
+                    break;
+                case 2:
+                    readableState = "Bitten";
+                    break;
+                case 3:
+                    readableState = "Minigame";
+                    break;
+                case 4:
+                    readableState = "Catched";
+                    break;
+                case 5:
+                    readableState = "Lost";
+                    break;
+                default:
+                    readableState = "";
+                    break;
+            }
+
+            var bobber = new evNewFloatObject(bobberID, bobberPos, angleFromPlayer, playerId, readableState);
+            printEventInfo(bobber, EventCodes.NewFloatObject);
+        }
+        private void onHarvestStart(Dictionary<byte, object> parameters)
+        {
+            //HarvestStart: { "0":144653,"1":638045717068106818,"2":638045717068106818,"3":1263,"5":2.0,"6":-1,"7":-1,"252":54} 5: tiempo para terminar de harvestear
+            int harvestableId = int.Parse(parameters[3].ToString());
+            float time = float.Parse(parameters[5].ToString());
+
+            var hs = new evHarvestStart(harvestableId, time);
+            printEventInfo(hs, EventCodes.HarvestStart);
+        }
+
+        private void onKeySync(Dictionary<byte, object> parameters)
+        {
+            byte[] xorCode = (byte[])parameters[0];
+            var pkt = new evKeySync(BitConverter.ToString(xorCode).Replace("-", string.Empty));
+            printEventInfo(pkt, EventCodes.KeySync);
+        }
+
+        private void onNewGeneralItem(Dictionary<byte, object> parameters, EventCodes evCode)
+        {
+            int objectID = int.Parse(parameters[0].ToString());
+            int itemID = int.Parse(parameters[1].ToString());
+            short amount = short.Parse(parameters[2].ToString());
+            long avgValue = 0;
+
+            if (parameters.ContainsKey(4))
+            {
+                avgValue = long.Parse(parameters[4].ToString());
+                avgValue = (long)avgValue / 10000;
+            }
+
+            var newItem = new evNewSimpleItem(objectID, itemID, amount, avgValue);
+            printEventInfo(newItem, evCode);
+
+        }
+        private void onAttachItemContainer(Dictionary<byte, object> parameters)
+        {
+            int objectID = int.Parse(parameters[0].ToString());
+            byte[] ownerMarkID = (byte[])parameters[1];
+            int[] itemsID = (int[])parameters[3];
+            // Estos itemsID son los objectID de eventos como
+            // NewEquipmentItem: {"0":203114,"1":2984,"2":1,"4":6204632,"5":"Bettooo","6":2,"7":48000000,"8":[-1],"9":[-1],"252":28}
+            // donde 0 es el objectID
+
+            var itemContainer = new evAttachItemContainer(objectID, ownerMarkID, itemsID);
+            printEventInfo(itemContainer, EventCodes.AttachItemContainer);
+        }
+        private void onNewLoot(Dictionary<byte, object> parameters)
+        {
+            int lootId = int.Parse(parameters[0].ToString());
+            Single[] pos = (Single[])parameters[4];
+
+            var newloot = new evNewLoot(lootId, pos);
+            printEventInfo(newloot, EventCodes.NewLoot);
+        }
+        private void onHarvestFinished(Dictionary<byte, object> parameters)
+        {
+            //map[0:686375 1:637959518682696481 2:637959518687702927 3:2580 4:2 5:2 6:1 8:[] 9:[] 252:54]
+            int playerId = int.Parse(parameters[0].ToString());
+            int harvestableId = int.Parse(parameters[3].ToString());
+            short gathered = short.Parse(parameters[4].ToString());
+
+            short yield = 0;
+            if (parameters.ContainsKey(5))
+            {
+                yield = short.Parse(parameters[5].ToString());
+            }
+
+            short premium = 0;
+            if (parameters.ContainsKey(6))
+            {
+                premium = short.Parse(parameters[6].ToString());
+            }
+
+            short charges = 0;
+            if (parameters.ContainsKey(7))
+            {
+                charges = short.Parse(parameters[7].ToString());
+            }
+
+            var hf = new evHarvestFinished(playerId, harvestableId, gathered, yield, premium, charges);
+            printEventInfo(hf, EventCodes.HarvestFinished);
+
+        }
+        private void onMounted(Dictionary<byte, object> parameters)
+        {
+            int playerId = int.Parse(parameters[0].ToString());
+            bool isMounted = false;
+
+            if (parameters.ContainsKey(2))
+                isMounted = true;
+
+            var mounted = new evMounted(playerId, isMounted);
+            printEventInfo(mounted, EventCodes.Mounted);
+
+        }
+        private void onAttack(Dictionary<byte, object> parameters)
+        {
+            int attackerID = int.Parse(parameters[0].ToString());
+            int targetID = int.Parse(parameters[2].ToString());
+
+            var attackEv = new evAttack(attackerID, targetID);
+            printEventInfo(attackEv, EventCodes.Attack);
+        }
+        private void onNewPortalExit(Dictionary<byte, object> parameters)
+        {
+            int id = int.Parse(parameters[0].ToString());
+            Single[] pos = (Single[])parameters[1];
+            String type = (string)parameters[3].ToString();
+
+            var portal = new evNewPortalExit(id, pos, type);
+            printEventInfo(portal, EventCodes.NewRandomDungeonExit);
+        }
+
+        private void onNewHarvestableObject(Dictionary<byte, object> parameters)
+        {
+            // NewHarvestableObject: { "0":211813,"1":211239,"2":637903348349073726,"3":"+Z47IXg2YUWs1j2NjqNMZQ==","5":24,"6":112,"7":3,"8":[-374.0117,209.0445],"9":319.8794,"11":0,"252":36}
+            int id = int.Parse(parameters[0].ToString());
+            byte type = byte.Parse(parameters[5].ToString());
+            byte tier = byte.Parse(parameters[7].ToString());
+            Single[] pos = (Single[])parameters[8];
+            parameters.TryGetValue((byte)10, out object _charges);
+            byte charges = (byte)0;
+            byte enchantment = (byte)0;
+
+            if (parameters.ContainsKey(10))
+                enchantment = byte.Parse(parameters[10].ToString());
+
+            if (parameters.ContainsKey(11))
+                charges = byte.Parse(parameters[11].ToString());
+
+            var nho = new HarvestableObject(id, type, tier, pos, enchantment, charges);
+            printEventInfo(nho, EventCodes.NewHarvestableObject);
+        }
+        private void onHealthUpdate(Dictionary<byte, object> parameters)
+        {
+            try
+            {
+                parameters.TryGetValue((byte)0, out object _attEntityID);
+                int attackerEntityId = _attEntityID == null ? 0 : int.Parse(_attEntityID.ToString());
+                parameters.TryGetValue((byte)2, out object _tHU);
+                int targetHealthUpdate = _tHU == null ? 0 : int.Parse(_tHU.ToString());
+                parameters.TryGetValue((byte)3, out object _tH);
+                int targetHealth = _tH == null ? 0 : int.Parse(_tH.ToString());
+                int targetEntityId = int.Parse(parameters[6].ToString());
+
+                var hu = new evHealthUpdate(attackerEntityId, targetHealthUpdate, targetHealth, targetEntityId);
+                printEventInfo(hu, EventCodes.HealthUpdate);
+            }
+            catch (Exception e)
+            {
+                //Debug.WriteLine(e.StackTrace);
+            }
+        }
+        private void onLeaveEvent(Dictionary<byte, object> parameters)
+        {
+            int entityId = int.Parse(parameters[0].ToString());
+            var leave = new evLeave(entityId);
+
+            printEventInfo(leave, EventCodes.Leave);
+        }
+
+        private void onJoinFinished()
+        {
+            evJoinFinished jf = new evJoinFinished();
+            printEventInfo(jf, EventCodes.JoinFinished);
+        }
+
+        private void onUpdateSilver(Dictionary<byte, object> parameters)
+        {
+            int id = int.Parse(parameters[0].ToString());
+            string silver = parameters[1].ToString();
+            int len = silver.Length - 4;
+            long currentSilver = long.Parse(silver.Substring(0, len));
+
+            var us = new evUpdateSilver(id, currentSilver);
+
+            printEventInfo(us, EventCodes.UpdateMoney);
+        }
+
+        private void onNewSimpleHarvestableObjectList(Dictionary<byte, object> parameters)
+        {
+            List<HarvestableObject> harvestableList = new List<HarvestableObject>();
+
+            List<int> idList = new List<int>();
+            if (parameters[0].GetType() == typeof(Byte[]))
+            {
+                Byte[] typeListByte = (Byte[])parameters[0]; //list of types
+                foreach (Byte b in typeListByte)
+                    idList.Add(b);
+            }
+            else if (parameters[0].GetType() == typeof(Int16[]))
+            {
+                Int16[] typeListByte = (Int16[])parameters[0]; //list of types
+                foreach (Int16 b in typeListByte)
+                    idList.Add(b);
+            }
+            else
+            {
+                Console.WriteLine("onNewSimpleHarvestableObjectList type error: " + parameters[0].GetType());
+                return;
+            }
+
+            try
+            {
+                Byte[] typesList = (Byte[])parameters[1]; //list of types
+                Byte[] tiersList = (Byte[])parameters[2]; //list of tiers
+                Single[] posList = (Single[])parameters[3]; //list of positions X1, Y1, X2, Y2 ...
+                Byte[] chargeList = (Byte[])parameters[4]; //charge
+
+                for (int i = 0; i < idList.Count; i++)
                 {
-                    charges = short.Parse(parameters[7].ToString());
+                    int id = int.Parse(idList.ElementAt(i).ToString());
+                    byte type = byte.Parse(typesList[i].ToString());
+                    byte tier = byte.Parse(tiersList[i].ToString());
+                    Single posX = (Single)posList[i * 2];
+                    Single posY = (Single)posList[i * 2 + 1];
+                    Single[] pos = new Single[2] { posX, posY };
+                    Byte charges = byte.Parse(chargeList[i].ToString());
+                    byte enchantent = (byte)0;
+
+                    var hObject = new HarvestableObject(id, type, tier, pos, charges, enchantent);
+                    harvestableList.Add(hObject);
                 }
 
-                var hf = new evHarvestFinished(playerId, harvestableId, gathered, yield, premium, charges);
-                printEventInfo(hf, EventCodes.HarvestFinished);
-
             }
-            private void onMounted(Dictionary<byte, object> parameters)
+            catch (Exception e)
             {
-                int playerId = int.Parse(parameters[0].ToString());
-                bool isMounted = false;
-
-                if (parameters.ContainsKey(2))
-                    isMounted = true;
-
-                var mounted = new evMounted(playerId, isMounted);
-                printEventInfo(mounted, EventCodes.Mounted);
-
+                Console.WriteLine("eL: " + e.ToString());
             }
-            private void onAttack(Dictionary<byte, object> parameters)
-            {
-                int attackerID = int.Parse(parameters[0].ToString());
-                int targetID = int.Parse(parameters[2].ToString());
 
-                var attackEv = new evAttack(attackerID, targetID);
-                printEventInfo(attackEv, EventCodes.Attack);
-            }
-            private void onNewPortalExit(Dictionary<byte, object> parameters)
+            var jol = new HarvestableObjectList(harvestableList);
+            printEventInfo(jol, EventCodes.NewSimpleHarvestableObjectList);
+        }
+
+        private void onNewSimpleHarvestableObject(Dictionary<byte, object> parameters)
+        {
+            int id = int.Parse(parameters[0].ToString());
+            byte type = byte.Parse(parameters[1].ToString());
+            byte tier = byte.Parse(parameters[2].ToString());
+            Single[] loc = (Single[])parameters[3];
+            Byte count = byte.Parse(parameters[4].ToString());
+            byte charges = (byte)0;
+
+            var nho = new HarvestableObject(id, type, tier, loc, count, charges);
+            printEventInfo(nho, EventCodes.NewHarvestableObject);
+        }
+
+        private void onHarvestableChangeState(Dictionary<byte, object> parameters)
+        {
+            int id = int.Parse(parameters[0].ToString());
+
+            int charges = 0;
+            if (parameters.ContainsKey(1))
             {
+                charges = int.Parse(parameters[1].ToString());
+            }
+
+            int enchantment = 0;
+            if (parameters.ContainsKey(2))
+            {
+                enchantment = int.Parse(parameters[2].ToString());
+            }
+
+            var change = new HarvestableChangeState(id, charges, enchantment);
+            printEventInfo(change, EventCodes.HarvestableChangeState);
+        }
+
+        private void onInCombatStateUpdate(Dictionary<byte, object> parameters)
+        {
+            long playerId = long.Parse(parameters[0].ToString());
+
+            parameters.TryGetValue((byte)1, out object _playerStatus);
+            bool playerAttacking = _playerStatus == null ? false : bool.Parse(_playerStatus.ToString());
+
+            parameters.TryGetValue((byte)2, out object _enemyStatus);
+            bool enemyAttacking = _enemyStatus == null ? false: bool.Parse(_enemyStatus.ToString());
+
+            var comUp = new InCombatStateUpdate(playerId, playerAttacking, enemyAttacking);
+            printEventInfo(comUp, EventCodes.InCombatStateUpdate);
+        }
+
+        private void onNewMountObject(Dictionary<byte, object> parameters)
+        {
+            int id = int.Parse(parameters[0].ToString());
+            float[] pos = (float[])parameters[3];
+            byte[] ownerMarkId = (byte[])parameters[5];
+
+            var newMount = new evNewMountObject(id, pos, ownerMarkId);
+            printEventInfo(newMount, EventCodes.NewMountObject);
+        }
+
+        private void onNewMob(Dictionary<byte, object> parameters)
+        {
+            //if (!parameters.ContainsKey(13))
+            //    return;
+
                 int id = int.Parse(parameters[0].ToString());
-                Single[] pos = (Single[])parameters[1];
-                String type = (string)parameters[3].ToString();
+            int typeId = int.Parse(parameters[1].ToString());
+            Single[] pos = (Single[])parameters[7];
+            int health;
+            if (parameters.ContainsKey(13))
+            {
+                health = int.Parse(parameters[13].ToString());
+            }
+            else
+            {
+                health = int.Parse(parameters[14].ToString());
+            }
+            int rarity = int.Parse(parameters[22].ToString());
 
-                var portal = new evNewPortalExit(id, pos, type);
-                printEventInfo(portal, EventCodes.NewRandomDungeonExit);
+            var mob = new evNewMob(id, typeId, pos, health, rarity);
+            printEventInfo(mob, EventCodes.NewMob);
+        }
+
+        private void onNewCharacter(Dictionary<byte, object> parameters)
+        {
+            int id = int.Parse(parameters[0].ToString());
+            string nick = parameters[1].ToString();
+            object oGuild = "";
+            object oAlliance = "";
+            parameters.TryGetValue((byte)8, out oGuild);
+            parameters.TryGetValue((byte)51, out oAlliance);
+            string guild = oGuild == null ? "" : oGuild.ToString();
+            string alliance = oAlliance == null ? "" : oAlliance.ToString();
+            Single[] pos = { 0, 0 };
+            short[] items = new short[10];
+            short[] skills;
+            try
+            {
+                skills = new short[6];
+            }
+            catch { return; }
+            int faction = int.Parse(parameters[53].ToString());
+            int currentHealth = int.Parse(parameters[22].ToString());
+            int maxHealth = int.Parse(parameters[23].ToString());
+
+            int index = 0;
+            if (parameters[40].GetType() == typeof(Byte[]))
+            {
+                Byte[] itemList = (Byte[])parameters[40];
+                foreach (Byte b in itemList)
+                {
+                    if (index >= 10)
+                        break;
+
+                    items[index] = Convert.ToInt16(b);
+                    index++;
+                }
+            }
+            else
+            {
+                Int16[] itemList = (Int16[])parameters[40];
+                foreach (Int16 b in itemList)
+                {
+                    if (index >= 10)
+                        break;
+
+                    items[index] = b;
+                    index++;
+                }
             }
 
-            private void onNewHarvestableObject(Dictionary<byte, object> parameters)
+            index = 0;
+            if (parameters[43].GetType() == typeof(Byte[]))
             {
-                // NewHarvestableObject: { "0":211813,"1":211239,"2":637903348349073726,"3":"+Z47IXg2YUWs1j2NjqNMZQ==","5":24,"6":112,"7":3,"8":[-374.0117,209.0445],"9":319.8794,"11":0,"252":36}
-                int id = int.Parse(parameters[0].ToString());
-                byte type = byte.Parse(parameters[5].ToString());
-                byte tier = byte.Parse(parameters[7].ToString());
-                Single[] pos = (Single[])parameters[8];
-                parameters.TryGetValue((byte)10, out object _charges);
-                byte charges = (byte)0;
-                byte enchantment = (byte)0;
-
-                if (parameters.ContainsKey(10))
-                    enchantment = byte.Parse(parameters[10].ToString());
-
-                if (parameters.ContainsKey(11))
-                    charges = byte.Parse(parameters[11].ToString());
-
-                var nho = new HarvestableObject(id, type, tier, pos, enchantment, charges);
-                printEventInfo(nho, EventCodes.NewHarvestableObject);
-            }
-            private void onHealthUpdate(Dictionary<byte, object> parameters)
-            {
-                try
+                Byte[] skillList = (Byte[])parameters[43];
+                foreach (Byte b in skillList)
                 {
-                    parameters.TryGetValue((byte)0, out object _attEntityID);
-                    int attackerEntityId = _attEntityID == null ? 0 : int.Parse(_attEntityID.ToString());
-                    parameters.TryGetValue((byte)2, out object _tHU);
-                    int targetHealthUpdate = _tHU == null ? 0 : int.Parse(_tHU.ToString());
-                    parameters.TryGetValue((byte)3, out object _tH);
-                    int targetHealth = _tH == null ? 0 : int.Parse(_tH.ToString());
-                    int targetEntityId = int.Parse(parameters[6].ToString());
+                    if (index >= 6)
+                        break;
 
-                    var hu = new evHealthUpdate(attackerEntityId, targetHealthUpdate, targetHealth, targetEntityId);
-                    printEventInfo(hu, EventCodes.HealthUpdate);
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine(e.StackTrace);
+                    skills[index] = Convert.ToInt16(b);
+                    index++;
                 }
             }
-            private void onLeaveEvent(Dictionary<byte, object> parameters)
+            else
             {
-                int entityId = int.Parse(parameters[0].ToString());
-                var leave = new evLeave(entityId);
+                Int16[] skillList = (Int16[])parameters[43];
+                foreach (Int16 b in skillList)
+                {
+                    if (index >= 6)
+                        break;
 
-                printEventInfo(leave, EventCodes.Leave);
+                    skills[index] = b;
+                    index++;
+                }
             }
 
-            private void onJoinFinished()
-            {
-                evJoinFinished jf = new evJoinFinished();
-                printEventInfo(jf, EventCodes.JoinFinished);
-            }
-
-            private void onUpdateSilver(Dictionary<byte, object> parameters)
-            {
-                int id = int.Parse(parameters[0].ToString());
-                string silver = parameters[1].ToString();
-                int len = silver.Length - 4;
-                long currentSilver = long.Parse(silver.Substring(0, len));
-
-                var us = new evUpdateSilver(id, currentSilver);
-
-                printEventInfo(us, EventCodes.UpdateMoney);
-            }
-
-            private void onNewSimpleHarvestableObjectList(Dictionary<byte, object> parameters)
-            {
-                List<HarvestableObject> harvestableList = new List<HarvestableObject>();
-
-                List<int> idList = new List<int>();
-                if (parameters[0].GetType() == typeof(Byte[]))
-                {
-                    Byte[] typeListByte = (Byte[])parameters[0]; //list of types
-                    foreach (Byte b in typeListByte)
-                        idList.Add(b);
-                }
-                else if (parameters[0].GetType() == typeof(Int16[]))
-                {
-                    Int16[] typeListByte = (Int16[])parameters[0]; //list of types
-                    foreach (Int16 b in typeListByte)
-                        idList.Add(b);
-                }
-                else
-                {
-                    Console.WriteLine("onNewSimpleHarvestableObjectList type error: " + parameters[0].GetType());
-                    return;
-                }
-
-                try
-                {
-                    Byte[] typesList = (Byte[])parameters[1]; //list of types
-                    Byte[] tiersList = (Byte[])parameters[2]; //list of tiers
-                    Single[] posList = (Single[])parameters[3]; //list of positions X1, Y1, X2, Y2 ...
-                    Byte[] chargeList = (Byte[])parameters[4]; //charge
-
-                    for (int i = 0; i < idList.Count; i++)
-                    {
-                        int id = int.Parse(idList.ElementAt(i).ToString());
-                        byte type = byte.Parse(typesList[i].ToString());
-                        byte tier = byte.Parse(tiersList[i].ToString());
-                        Single posX = (Single)posList[i * 2];
-                        Single posY = (Single)posList[i * 2 + 1];
-                        Single[] pos = new Single[2] { posX, posY };
-                        Byte charges = byte.Parse(chargeList[i].ToString());
-                        byte enchantent = (byte)0;
-
-                        var hObject = new HarvestableObject(id, type, tier, pos, charges, enchantent);
-                        harvestableList.Add(hObject);
-                    }
-
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("eL: " + e.ToString());
-                }
-
-                var jol = new HarvestableObjectList(harvestableList);
-                printEventInfo(jol, EventCodes.NewSimpleHarvestableObjectList);
-            }
-
-            private void onNewSimpleHarvestableObject(Dictionary<byte, object> parameters)
-            {
-                int id = int.Parse(parameters[0].ToString());
-                byte type = byte.Parse(parameters[1].ToString());
-                byte tier = byte.Parse(parameters[2].ToString());
-                Single[] loc = (Single[])parameters[3];
-                Byte count = byte.Parse(parameters[4].ToString());
-                byte charges = (byte)0;
-
-                var nho = new HarvestableObject(id, type, tier, loc, count, charges);
-                printEventInfo(nho, EventCodes.NewHarvestableObject);
-            }
-
-            private void onHarvestableChangeState(Dictionary<byte, object> parameters)
-            {
-                int id = int.Parse(parameters[0].ToString());
-
-                int charges = 0;
-                if (parameters.ContainsKey(1))
-                {
-                    charges = int.Parse(parameters[1].ToString());
-                }
-
-                int enchantment = 0;
-                if (parameters.ContainsKey(2))
-                {
-                    enchantment = int.Parse(parameters[2].ToString());
-                }
-
-                var change = new HarvestableChangeState(id, charges, enchantment);
-                printEventInfo(change, EventCodes.HarvestableChangeState);
-            }
-
-            private void onInCombatStateUpdate(Dictionary<byte, object> parameters)
-            {
-                long playerId = long.Parse(parameters[0].ToString());
-
-                parameters.TryGetValue((byte)1, out object _playerStatus);
-                bool playerAttacking = _playerStatus == null ? false : bool.Parse(_playerStatus.ToString());
-
-                parameters.TryGetValue((byte)2, out object _enemyStatus);
-                bool enemyAttacking = _enemyStatus == null ? false: bool.Parse(_enemyStatus.ToString());
-
-                var comUp = new InCombatStateUpdate(playerId, playerAttacking, enemyAttacking);
-                printEventInfo(comUp, EventCodes.InCombatStateUpdate);
-            }
-
-            private void onNewMountObject(Dictionary<byte, object> parameters)
-            {
-                int id = int.Parse(parameters[0].ToString());
-                float[] pos = (float[])parameters[3];
-                byte[] ownerMarkId = (byte[])parameters[5];
-
-                var newMount = new evNewMountObject(id, pos, ownerMarkId);
-                printEventInfo(newMount, EventCodes.NewMountObject);
-            }
-
-            private void onNewMob(Dictionary<byte, object> parameters)
-            {
-                //if (!parameters.ContainsKey(13))
-                //    return;
-
-                 int id = int.Parse(parameters[0].ToString());
-                int typeId = int.Parse(parameters[1].ToString());
-                Single[] pos = (Single[])parameters[7];
-                int health;
-                if (parameters.ContainsKey(13))
-                {
-                    health = int.Parse(parameters[13].ToString());
-                }
-                else
-                {
-                    health = int.Parse(parameters[14].ToString());
-                }
-                int rarity = int.Parse(parameters[22].ToString());
-
-                var mob = new evNewMob(id, typeId, pos, health, rarity);
-                printEventInfo(mob, EventCodes.NewMob);
-            }
-
-            private void onNewCharacter(Dictionary<byte, object> parameters)
-            {
-                int id = int.Parse(parameters[0].ToString());
-                string nick = parameters[1].ToString();
-                object oGuild = "";
-                object oAlliance = "";
-                parameters.TryGetValue((byte)8, out oGuild);
-                parameters.TryGetValue((byte)51, out oAlliance);
-                string guild = oGuild == null ? "" : oGuild.ToString();
-                string alliance = oAlliance == null ? "" : oAlliance.ToString();
-                Single[] pos = { 0, 0 };
-                short[] items = new short[10];
-                short[] skills;
-                try
-                {
-                    skills = new short[6];
-                }
-                catch { return; }
-                int faction = int.Parse(parameters[53].ToString());
-                int currentHealth = int.Parse(parameters[22].ToString());
-                int maxHealth = int.Parse(parameters[23].ToString());
-
-                int index = 0;
-                if (parameters[40].GetType() == typeof(Byte[]))
-                {
-                    Byte[] itemList = (Byte[])parameters[40];
-                    foreach (Byte b in itemList)
-                    {
-                        if (index >= 10)
-                            break;
-
-                        items[index] = Convert.ToInt16(b);
-                        index++;
-                    }
-                }
-                else
-                {
-                    Int16[] itemList = (Int16[])parameters[40];
-                    foreach (Int16 b in itemList)
-                    {
-                        if (index >= 10)
-                            break;
-
-                        items[index] = b;
-                        index++;
-                    }
-                }
-
-                index = 0;
-                if (parameters[43].GetType() == typeof(Byte[]))
-                {
-                    Byte[] skillList = (Byte[])parameters[43];
-                    foreach (Byte b in skillList)
-                    {
-                        if (index >= 6)
-                            break;
-
-                        skills[index] = Convert.ToInt16(b);
-                        index++;
-                    }
-                }
-                else
-                {
-                    Int16[] skillList = (Int16[])parameters[43];
-                    foreach (Int16 b in skillList)
-                    {
-                        if (index >= 6)
-                            break;
-
-                        skills[index] = b;
-                        index++;
-                    }
-                }
-
-                    var newChar = new evNewCharacter(id, nick, guild, alliance, pos, items, skills, faction, currentHealth, maxHealth);
+            var newChar = new evNewCharacter(id, nick, guild, alliance, pos, items, skills, faction, currentHealth, maxHealth);
             printEventInfo(newChar, EventCodes.NewCharacter);
         }
 

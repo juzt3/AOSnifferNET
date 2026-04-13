@@ -104,10 +104,15 @@
       <HintPath>..\packages\PacketDotNet.1.4.7\lib\net47\PacketDotNet.dll</HintPath>
     </Reference>
     <Reference Include="PhotonPackageParser, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PhotonPackageParser.4.1.0\lib\netstandard2.0\PhotonPackageParser.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>PhotonPacketParser\PhotonPackageParser.dll</HintPath>
     </Reference>
     <Reference Include="Protocol16, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PhotonPackageParser.4.1.0\lib\netstandard2.0\Protocol16.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>PhotonPacketParser\Protocol16.dll</HintPath>
+    </Reference>
+    <Reference Include="Protocol18">
+      <HintPath>PhotonPacketParser\Protocol18.dll</HintPath>
     </Reference>
     <Reference Include="SharpPcap, Version=6.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpPcap.6.3.0\lib\netstandard2.0\SharpPcap.dll</HintPath>
