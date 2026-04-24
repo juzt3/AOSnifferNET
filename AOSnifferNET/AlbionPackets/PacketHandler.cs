@@ -109,7 +109,8 @@ namespace AOSnifferNET
                     onNewMob(parameters);
                     break;
                 case EventCodes.JoinFinished:
-                    onJoinFinished();
+                    //onJoinFinished();
+                    printEventInfo(parameters, evCode);
                     break;
                 case EventCodes.UpdateMoney:
                     onUpdateSilver(parameters);

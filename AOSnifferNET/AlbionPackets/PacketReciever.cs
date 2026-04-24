@@ -171,46 +171,47 @@ namespace AOSnifferNET
                             return;
                         }
 
-                        // Detectar región del servidor una sola vez
-                        if (!serverDetected)
+                        // Puerto 5056
+                        if (udp_packet.SourcePort == 5056 || udp_packet.DestinationPort == 5056)
                         {
-                            string gameServerIP = ip_packet.SourceAddress.ToString() == this.localIp
-                                ? ip_packet.DestinationAddress.ToString()
-                                : ip_packet.SourceAddress.ToString();
+                            // Detectar región del servidor una sola vez
+                            if (!serverDetected)
+                            {
+                                string gameServerIP = ip_packet.SourceAddress.ToString() == this.localIp
+                                    ? ip_packet.DestinationAddress.ToString()
+                                    : ip_packet.SourceAddress.ToString();
 
-                            if (gameServerIP.StartsWith("5.188.125."))
-                            {
-                                Console.WriteLine("[ServerRegion][{\"server\":\"America\"}]");
-                                serverDetected = true;
+                                if (gameServerIP.StartsWith("5.188.125."))
+                                {
+                                    Console.WriteLine("[ServerRegion][{\"server\":\"America\"}]");
+                                    serverDetected = true;
+                                }
+                                else if (gameServerIP.StartsWith("5.45.187."))
+                                {
+                                    Console.WriteLine("[ServerRegion][{\"server\":\"Asia\"}]");
+                                    serverDetected = true;
+                                }
+                                else if (gameServerIP.StartsWith("193.169.238."))
+                                {
+                                    Console.WriteLine("[ServerRegion][{\"server\":\"Europe\"}]");
+                                    serverDetected = true;
+                                }
                             }
-                            else if (gameServerIP.StartsWith("5.45.187."))
-                            {
-                                Console.WriteLine("[ServerRegion][{\"server\":\"Asia\"}]");
-                                serverDetected = true;
-                            }
-                            else if (gameServerIP.StartsWith("193.169.238."))
-                            {
-                                Console.WriteLine("[ServerRegion][{\"server\":\"Europe\"}]");
-                                serverDetected = true;
-                            }
+
+                            this.photonParser.ReceivePacket(udp_packet.PayloadData);
                         }
-                    }
-                    // Puerto 5056
-                    if (udp_packet.SourcePort == 5056 || udp_packet.DestinationPort == 5056)
-                    {
-                        this.photonParser.ReceivePacket(udp_packet.PayloadData);
-                    }
-                    // Puerto 5055
-                    else if (udp_packet.SourcePort == 5055 || udp_packet.DestinationPort == 5055)
-                    {
-                        if (packet.PayloadPacket is IPv4Packet ip_pkt)
+                        // Puerto 5055
+                        else if (udp_packet.SourcePort == 5055 || udp_packet.DestinationPort == 5055)
                         {
-                            if (ip_pkt.SourceAddress.ToString() == "5.188.125.60" ||
-                                ip_pkt.SourceAddress.ToString() == "5.45.187.118")
+                            if (packet.PayloadPacket is IPv4Packet ip_pkt)
                             {
-                                var output = new StreamWriter(Console.OpenStandardOutput());
-                                output.WriteLine("[onLogin][{\"status\":\"New Packet\"}]");
-                                output.Flush();
+                                if (ip_pkt.SourceAddress.ToString() == "5.188.125.60" ||
+                                    ip_pkt.SourceAddress.ToString() == "5.45.187.118")
+                                {
+                                    var output = new StreamWriter(Console.OpenStandardOutput());
+                                    output.WriteLine("[onLogin][{\"status\":\"New Packet\"}]");
+                                    output.Flush();
+                                }
                             }
                         }
                     }
