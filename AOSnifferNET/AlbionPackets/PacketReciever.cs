@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Threading;
 
@@ -33,25 +34,40 @@ namespace AOSnifferNET
             }
         }
 
-        // Detecta la IP local de la VM
         private string GetLocalIPAddress()
         {
-            string localIP = "";
-            var host = Dns.GetHostEntry(Dns.GetHostName());
-            foreach (var ip in host.AddressList)
-            {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
-                {
-                    localIP = ip.ToString();
-                    break;
-                }
-            }
+            var candidates = NetworkInterface.GetAllNetworkInterfaces()
+                .Where(ni =>
+                    ni.OperationalStatus == OperationalStatus.Up &&
+                    ni.NetworkInterfaceType != NetworkInterfaceType.Loopback &&
+                    ni.NetworkInterfaceType != NetworkInterfaceType.Tunnel)
+                .SelectMany(ni => ni.GetIPProperties().UnicastAddresses)
+                .Where(addr =>
+                    addr.Address.AddressFamily == AddressFamily.InterNetwork &&
+                    !IPAddress.IsLoopback(addr.Address))
+                .Select(addr => addr.Address)
+                .ToList();
 
-            if (string.IsNullOrEmpty(localIP))
+            var preferred = candidates
+                .OrderByDescending(ip => GetIPPriority(ip))
+                .FirstOrDefault();
+
+            if (preferred == null)
                 throw new Exception("No se pudo determinar la IP local.");
 
-            Console.WriteLine($"Local IP detected: {localIP}");
-            return localIP;
+            Console.WriteLine($"Local IP detected: {preferred}");
+            return preferred.ToString();
+        }
+
+        private int GetIPPriority(IPAddress ip)
+        {
+            var bytes = ip.GetAddressBytes();
+
+            if (bytes[0] == 192 && bytes[1] == 168) return 3; // Red doméstica/corporativa típica
+            if (bytes[0] == 10) return 2; // Red corporativa amplia
+            if (bytes[0] == 172 && bytes[1] >= 16 && bytes[1] <= 31) return 1; // Privado legítimo (excluye Docker/VMs)
+
+            return 0; // Pública, Docker u otras
         }
 
         private void CreateListener()
@@ -91,7 +107,6 @@ namespace AOSnifferNET
                             continue;
 
                         string desc = deviceSelected.Description.ToLowerInvariant();
-                        // Excluir adaptadores virtuales
                         if (!isLinux)
                         {
                             bool isVirtual = virtualKeywords.Any(k => desc.Contains(k));
@@ -103,7 +118,6 @@ namespace AOSnifferNET
                             if (!desc.Contains("pseudo-device"))
                                 continue;
                         }
-
 
                         if (devicesOpened.Contains(deviceSelected))
                             continue;
@@ -171,10 +185,8 @@ namespace AOSnifferNET
                             return;
                         }
 
-                        // Puerto 5056
                         if (udp_packet.SourcePort == 5056 || udp_packet.DestinationPort == 5056)
                         {
-                            // Detectar región del servidor una sola vez
                             if (!serverDetected)
                             {
                                 string gameServerIP = ip_packet.SourceAddress.ToString() == this.localIp
@@ -200,7 +212,6 @@ namespace AOSnifferNET
 
                             this.photonParser.ReceivePacket(udp_packet.PayloadData);
                         }
-                        // Puerto 5055
                         else if (udp_packet.SourcePort == 5055 || udp_packet.DestinationPort == 5055)
                         {
                             if (packet.PayloadPacket is IPv4Packet ip_pkt)
