@@ -542,5 +542,9 @@ namespace AOSnifferNET
         RequestLoreSnippetStates = 537,
         RetrieveCarriableObjectStart = 538,
         RetrieveCarriableObjectCancel = 539,
+        ForfeitCustomMatch = 540,
+        GetPartyMemberCluster = 541,
+        SetPartyNavigation = 542,
+        EndPartyNavigation = 543,
     }
 }

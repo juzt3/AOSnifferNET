@@ -192,8 +192,8 @@ namespace AOSnifferNET
                                 string gameServerIP = ip_packet.SourceAddress.ToString() == this.localIp
                                     ? ip_packet.DestinationAddress.ToString()
                                     : ip_packet.SourceAddress.ToString();
-
-                                if (gameServerIP.StartsWith("5.188.125."))
+                                Console.WriteLine(gameServerIP.ToString());
+                                if (gameServerIP.StartsWith("5.188.125.") || gameServerIP.StartsWith("85.234.70.")) // Second one if inside avalonian roads
                                 {
                                     Console.WriteLine("[ServerRegion][{\"server\":\"America\"}]");
                                     serverDetected = true;
