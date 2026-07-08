@@ -86,7 +86,9 @@ namespace AOSnifferNET
                 "tap",
                 "wan miniport",
                 "wsl",
-                "pseudo"
+                "pseudo",
+                "virtual",
+                "bluetooth"
             };
 
             bool running = true;
@@ -109,6 +111,7 @@ namespace AOSnifferNET
                         string desc = deviceSelected.Description.ToLowerInvariant();
                         if (!isLinux)
                         {
+                            //Console.WriteLine(deviceSelected.Description.ToLowerInvariant());
                             bool isVirtual = virtualKeywords.Any(k => desc.Contains(k));
                             if (isVirtual)
                                 continue;
